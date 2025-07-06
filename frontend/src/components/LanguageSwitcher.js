@@ -53,14 +53,15 @@ export default LanguageSwitcher;
 
 export const LanguageSwitcherWrapper = styled.div`
   position: fixed;
-  top: 16px;
+  top: 10px;
   right: 16px;
   z-index: 1000;
   display: flex;
   gap: 10px;
   padding: 8px 12px;
   border-radius: 2px;
-
+  margin-right: 70px;
+  background-color: rgb(255, 255, 255);
   @media (max-width: 768px) {
     right: 8px;
     top: 8px;

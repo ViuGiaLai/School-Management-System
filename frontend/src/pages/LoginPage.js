@@ -9,10 +9,14 @@ import { LightPurpleButton } from '../components/buttonStyles';
 import styled from 'styled-components';
 import { loginUser } from '../redux/userRelated/userHandle';
 import Popup from '../components/Popup';
+import { Helmet } from 'react-helmet';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 
 const defaultTheme = createTheme();
 
 const LoginPage = ({ role }) => {
+    const { t } = useTranslation();
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -121,8 +125,28 @@ const LoginPage = ({ role }) => {
         }
     }, [status, currentRole, navigate, error, response, currentUser]);
 
+    // cho title trang login đổi ngôn ngữ
+    let titleKey = 'adminLogin.title'; // default
+    let welcomeKey = 'login.welcome';
+    let forgotKey = 'login.forgot';
+    let rememberKey = 'login.remember';
+    let loginBtnKey = 'button.login';
+    let guestBtnKey = 'button.guest';
+    let noAccountKey = 'form.noAccount';
+    let signupKey = 'button.signup';
+
+    if (role === 'Teacher') {
+        titleKey = 'teacherLogin.title';
+    } else if (role === 'Student') {
+        titleKey = 'studentLogin.title';
+    }
+
     return (
         <ThemeProvider theme={defaultTheme}>
+            <Helmet>
+                <title>{t(titleKey)}</title>
+            </Helmet>
+            <LanguageSwitcher />
             <Grid container component="main" sx={{ height: '100vh' }}>
                 <CssBaseline />
                 <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
@@ -135,11 +159,11 @@ const LoginPage = ({ role }) => {
                             alignItems: 'center',
                         }}
                     >
-                        <Typography variant="h4" sx={{ mb: 2, color: "#2c2143" }}>
-                            {role} Login
+                        <Typography variant="h4" sx={{ mb: 2, color: "#2c2143", textAlign: 'center' }}>
+                            {t(titleKey)}
                         </Typography>
                         <Typography variant="h7">
-                            Welcome back! Please enter your details
+                            {t(welcomeKey)}
                         </Typography>
                         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 2 }}>
                             {role === "Student" ? (
@@ -149,13 +173,13 @@ const LoginPage = ({ role }) => {
                                         required
                                         fullWidth
                                         id="rollNumber"
-                                        label="Enter your Roll Number"
+                                        label={t('login.rollNumber')}
                                         name="rollNumber"
                                         autoComplete="off"
                                         type="number"
                                         autoFocus
                                         error={rollNumberError}
-                                        helperText={rollNumberError && 'Roll Number is required'}
+                                        helperText={rollNumberError && t('login.rollNumberRequired')}
                                         onChange={handleInputChange}
                                     />
                                     <TextField
@@ -163,12 +187,12 @@ const LoginPage = ({ role }) => {
                                         required
                                         fullWidth
                                         id="studentName"
-                                        label="Enter your name"
+                                        label={t('login.studentName')}
                                         name="studentName"
                                         autoComplete="name"
                                         autoFocus
                                         error={studentNameError}
-                                        helperText={studentNameError && 'Name is required'}
+                                        helperText={studentNameError && t('login.nameRequired')}
                                         onChange={handleInputChange}
                                     />
                                 </>
@@ -178,12 +202,12 @@ const LoginPage = ({ role }) => {
                                     required
                                     fullWidth
                                     id="email"
-                                    label="Enter your email"
+                                    label={t('login.email')}
                                     name="email"
                                     autoComplete="email"
                                     autoFocus
                                     error={emailError}
-                                    helperText={emailError && 'Email is required'}
+                                    helperText={emailError && t('login.emailRequired')}
                                     onChange={handleInputChange}
                                 />
                             )}
@@ -192,12 +216,12 @@ const LoginPage = ({ role }) => {
                                 required
                                 fullWidth
                                 name="password"
-                                label="Password"
+                                label={t('login.password')}
                                 type={toggle ? 'text' : 'password'}
                                 id="password"
                                 autoComplete="current-password"
                                 error={passwordError}
-                                helperText={passwordError && 'Password is required'}
+                                helperText={passwordError && t('login.passwordRequired')}
                                 onChange={handleInputChange}
                                 InputProps={{
                                     endAdornment: (
@@ -216,10 +240,10 @@ const LoginPage = ({ role }) => {
                             <Grid container sx={{ display: "flex", justifyContent: "space-between" }}>
                                 <FormControlLabel
                                     control={<Checkbox value="remember" color="primary" />}
-                                    label="Remember me"
+                                    label={t(rememberKey)}
                                 />
                                 <StyledLink href="#">
-                                    Forgot password?
+                                    {t(forgotKey)}
                                 </StyledLink>
                             </Grid>
                             <LightPurpleButton
@@ -230,7 +254,7 @@ const LoginPage = ({ role }) => {
                             >
                                 {loader ?
                                     <CircularProgress size={24} color="inherit" />
-                                    : "Login"}
+                                    : t(loginBtnKey)}
                             </LightPurpleButton>
                             <Button
                                 fullWidth
@@ -238,16 +262,16 @@ const LoginPage = ({ role }) => {
                                 variant="outlined"
                                 sx={{ mt: 2, mb: 3, color: "#7f56da", borderColor: "#7f56da" }}
                             >
-                                Login as Guest
+                                {t(guestBtnKey)}
                             </Button>
                             {role === "Admin" &&
                                 <Grid container>
                                     <Grid>
-                                        Don't have an account?
+                                        {t(noAccountKey)}
                                     </Grid>
                                     <Grid item sx={{ ml: 2 }}>
                                         <StyledLink to="/Adminregister">
-                                            Sign up
+                                            {t(signupKey)}
                                         </StyledLink>
                                     </Grid>
                                 </Grid>

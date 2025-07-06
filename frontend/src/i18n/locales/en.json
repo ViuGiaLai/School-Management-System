@@ -19,5 +19,49 @@
     "studentDesc": "Login as a student to explore course materials and assignments.",
     "teacher": "Teacher",
     "teacherDesc": "Login as a teacher to create courses, assignments, and track student progress."
-  }
+  },
+  "adminLogin": {
+    "title": "Admin Login - School Management System",
+    "heading": "Admin Login"
+  },
+  "teacherLogin": {
+    "title": "Teacher Login - School Management System",
+    "heading": "Teacher Login"
+  },
+  "studentLogin": {
+    "title": "Student Login - School Management System",
+    "heading": "Student Login"
+  },
+  "login": {
+    "welcome": "Welcome back! Please enter your details",
+    "rollNumber": "Enter your Roll Number",
+    "rollNumberRequired": "Roll Number is required",
+    "studentName": "Enter your name",
+    "nameRequired": "Name is required",
+    "email": "Enter your email",
+    "emailRequired": "Email is required",
+    "password": "Password",
+    "passwordRequired": "Password is required",
+    "forgot": "Forgot password?",
+    "remember": "Remember me"
+  },
+  "adminRegister": {
+    "title": "Admin Register - School Management System",
+    "heading": "Admin Register",
+    "desc": "Create your own school by registering as an admin.\nYou will be able to add students and faculty and manage the system.",
+    "name": "Enter your name",
+    "nameRequired": "Name is required",
+    "schoolName": "Create your school name",
+    "schoolNameRequired": "School name is required",
+    "email": "Enter your email",
+    "emailRequired": "Email is required",
+    "password": "Password",
+    "passwordRequired": "Password is required",
+    "registerBtn": "Register",
+    "alreadyAccount": "Already have an account?",
+    "loginBtn": "Log in"
+  },
+  "adminDashboard": {
+  "title": "Admin Dashboard"
+}
 }

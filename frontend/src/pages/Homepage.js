@@ -12,61 +12,63 @@ const Homepage = () => {
     const { t } = useTranslation();
 
     return (
-        <div className="homepage-wrapper">
-            <div className="homepage-topbar">
-                <LanguageSwitcher />
-            </div>
+        <>
+            <LanguageSwitcher />
+            <div className="homepage-wrapper">
+                <div className="homepage-topbar">
+                </div>
 
-            <Container className="homepage-container">
-                <Grid container spacing={4} alignItems="center">
-                    <Grid item xs={12} md={6}>
-                        <img
-                            src={SchoolManagementSystem}
-                            alt="School Management System"
-                            style={{ width: '100%', }}
-                        />
-                    </Grid>
+                <Container className="homepage-container">
+                    <Grid container spacing={4} alignItems="center">
+                        <Grid item xs={12} md={6}>
+                            <img
+                                src={SchoolManagementSystem}
+                                alt="School Management System"
+                                style={{ width: '100%', }}
+                            />
+                        </Grid>
 
-                    <Grid item xs={12} md={6}>
-                        <div className="homepage-paper">
+                        <Grid item xs={12} md={6}>
+                            <div className="homepage-paper">
 
-                            <h1 className="homepage-title">
-                                {t("homepage.title")}
-                            </h1>
-
-                            <p className="homepage-text">
-                                {t("homepage.description")}
-                            </p>
-
-                            <Box className="homepage-box">
-                                <Link to="/choose" className="homepage-link">
-                                    <LightPurpleButton variant="contained" fullWidth>
-                                        {t("button.login")}
-                                    </LightPurpleButton>
-                                </Link>
-
-                                <Link to="/chooseasguest" className="homepage-link">
-                                    <Button
-                                        variant="outlined"
-                                        fullWidth
-                                        sx={{ mt: 2, mb: 3, color: "#7f56da", borderColor: "#7f56da" , padding: "10px 10px 10px"}}
-                                    >
-                                        {t("button.guest")}
-                                    </Button>
-                                </Link>
+                                <h1 className="homepage-title">
+                                    {t("homepage.title")}
+                                </h1>
 
                                 <p className="homepage-text">
-                                    {t("form.noAccount")}{' '}
-                                    <Link to="/Adminregister" style={{ color: "#550080" }}>
-                                        {t("button.signup")}
-                                    </Link>
+                                    {t("homepage.description")}
                                 </p>
-                            </Box>
-                        </div>
+
+                                <Box className="homepage-box">
+                                    <Link to="/choose" className="homepage-link">
+                                        <LightPurpleButton variant="contained" fullWidth>
+                                            {t("button.login")}
+                                        </LightPurpleButton>
+                                    </Link>
+
+                                    <Link to="/chooseasguest" className="homepage-link">
+                                        <Button
+                                            variant="outlined"
+                                            fullWidth
+                                            sx={{ mt: 2, mb: 3, color: "#7f56da", borderColor: "#7f56da" , padding: "10px 10px 10px"}}
+                                        >
+                                            {t("button.guest")}
+                                        </Button>
+                                    </Link>
+
+                                    <p className="homepage-text">
+                                        {t("form.noAccount")}{' '}
+                                        <Link to="/Adminregister" style={{ color: "#550080" }}>
+                                            {t("button.signup")}
+                                        </Link>
+                                    </p>
+                                </Box>
+                            </div>
+                        </Grid>
                     </Grid>
-                </Grid>
-            </Container>
-        </div>
+                </Container>
+            </div>
+        </>
     );
 };
 

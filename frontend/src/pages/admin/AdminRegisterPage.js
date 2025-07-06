@@ -10,6 +10,9 @@ import { LightPurpleButton } from '../../components/buttonStyles';
 import { registerUser } from '../../redux/userRelated/userHandle';
 import styled from 'styled-components';
 import Popup from '../../components/Popup';
+import { Helmet } from 'react-helmet';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from '../../components/LanguageSwitcher';
 
 const defaultTheme = createTheme();
 
@@ -74,8 +77,31 @@ const AdminRegisterPage = () => {
         }
     }, [status, currentUser, currentRole, navigate, error, response]);
 
+    const { t } = useTranslation();
+
+    // i18n keys
+    const titleKey = 'adminRegister.title';
+    const headingKey = 'adminRegister.heading';
+    const descKey = 'adminRegister.desc';
+    const nameLabelKey = 'adminRegister.name';
+    const nameRequiredKey = 'adminRegister.nameRequired';
+    const schoolNameLabelKey = 'adminRegister.schoolName';
+    const schoolNameRequiredKey = 'adminRegister.schoolNameRequired';
+    const emailLabelKey = 'adminRegister.email';
+    const emailRequiredKey = 'adminRegister.emailRequired';
+    const passwordLabelKey = 'adminRegister.password';
+    const passwordRequiredKey = 'adminRegister.passwordRequired';
+    const rememberKey = 'login.remember';
+    const registerBtnKey = 'adminRegister.registerBtn';
+    const alreadyAccountKey = 'adminRegister.alreadyAccount';
+    const loginBtnKey = 'adminRegister.loginBtn';
+
     return (
         <ThemeProvider theme={defaultTheme}>
+            <Helmet>
+                <title>{t(titleKey)}</title>
+            </Helmet>
+            <LanguageSwitcher />
             <Grid container component="main" sx={{ height: '100vh' }}>
                 <CssBaseline />
                 <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
@@ -89,13 +115,10 @@ const AdminRegisterPage = () => {
                         }}
                     >
                         <Typography variant="h4" sx={{ mb: 2, color: "#2c2143" }}>
-                            Admin Register
+                            {t(headingKey)}
                         </Typography>
                         <Typography variant="h7">
-                            Create your own school by registering as an admin.
-                            <br />
-                            You will be able to add students and faculty and
-                            manage the system.
+                            {t(descKey)}
                         </Typography>
                         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 2 }}>
                             <TextField
@@ -103,12 +126,12 @@ const AdminRegisterPage = () => {
                                 required
                                 fullWidth
                                 id="adminName"
-                                label="Enter your name"
+                                label={t(nameLabelKey)}
                                 name="adminName"
                                 autoComplete="name"
                                 autoFocus
                                 error={adminNameError}
-                                helperText={adminNameError && 'Name is required'}
+                                helperText={adminNameError && t(nameRequiredKey)}
                                 onChange={handleInputChange}
                             />
                             <TextField
@@ -116,11 +139,11 @@ const AdminRegisterPage = () => {
                                 required
                                 fullWidth
                                 id="schoolName"
-                                label="Create your school name"
+                                label={t(schoolNameLabelKey)}
                                 name="schoolName"
                                 autoComplete="off"
                                 error={schoolNameError}
-                                helperText={schoolNameError && 'School name is required'}
+                                helperText={schoolNameError && t(schoolNameRequiredKey)}
                                 onChange={handleInputChange}
                             />
                             <TextField
@@ -128,11 +151,11 @@ const AdminRegisterPage = () => {
                                 required
                                 fullWidth
                                 id="email"
-                                label="Enter your email"
+                                label={t(emailLabelKey)}
                                 name="email"
                                 autoComplete="email"
                                 error={emailError}
-                                helperText={emailError && 'Email is required'}
+                                helperText={emailError && t(emailRequiredKey)}
                                 onChange={handleInputChange}
                             />
                             <TextField
@@ -140,12 +163,12 @@ const AdminRegisterPage = () => {
                                 required
                                 fullWidth
                                 name="password"
-                                label="Password"
+                                label={t(passwordLabelKey)}
                                 type={toggle ? 'text' : 'password'}
                                 id="password"
                                 autoComplete="current-password"
                                 error={passwordError}
-                                helperText={passwordError && 'Password is required'}
+                                helperText={passwordError && t(passwordRequiredKey)}
                                 onChange={handleInputChange}
                                 InputProps={{
                                     endAdornment: (
@@ -164,7 +187,7 @@ const AdminRegisterPage = () => {
                             <Grid container sx={{ display: "flex", justifyContent: "space-between" }}>
                                 <FormControlLabel
                                     control={<Checkbox value="remember" color="primary" />}
-                                    label="Remember me"
+                                    label={t(rememberKey)}
                                 />
                             </Grid>
                             <LightPurpleButton
@@ -173,15 +196,15 @@ const AdminRegisterPage = () => {
                                 variant="contained"
                                 sx={{ mt: 3, mb: 2 }}
                             >
-                                {loader ? <CircularProgress size={24} color="inherit"/> : "Register"}
+                                {loader ? <CircularProgress size={24} color="inherit"/> : t(registerBtnKey)}
                             </LightPurpleButton>
                             <Grid container>
                                 <Grid>
-                                    Already have an account?
+                                    {t(alreadyAccountKey)}
                                 </Grid>
                                 <Grid item sx={{ ml: 2 }}>
                                     <StyledLink to="/Adminlogin">
-                                        Log in
+                                        {t(loginBtnKey)}
                                     </StyledLink>
                                 </Grid>
                             </Grid>

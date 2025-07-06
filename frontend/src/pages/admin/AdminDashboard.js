@@ -41,18 +41,26 @@ import AddClass from './classRelated/AddClass';
 import ClassDetails from './classRelated/ClassDetails';
 import ShowClasses from './classRelated/ShowClasses';
 import AccountMenu from '../../components/AccountMenu';
+import { useTranslation } from 'react-i18next';
+import { Helmet } from 'react-helmet';
+import LanguageSwitcher from '../../components/LanguageSwitcher';
 
 const AdminDashboard = () => {
     const [open, setOpen] = useState(false);
+    const { t } = useTranslation();
     const toggleDrawer = () => {
         setOpen(!open);
     };
 
     return (
         <>
+            <Helmet>
+                <title>{t('adminDashboard.title')}</title>
+            </Helmet>
             <Box sx={{ display: 'flex' }}>
                 <CssBaseline />
                 <AppBar open={open} position='absolute'>
+                    <LanguageSwitcher style={{ marginTop: '20px', textAlign: 'center' }} />
                     <Toolbar sx={{ pr: '24px' }}>
                         <IconButton
                             edge="start"
@@ -73,7 +81,7 @@ const AdminDashboard = () => {
                             noWrap
                             sx={{ flexGrow: 1 }}
                         >
-                            Admin Dashboard
+                            {t('adminDashboard.title')}
                         </Typography>
                         <AccountMenu />
                     </Toolbar>

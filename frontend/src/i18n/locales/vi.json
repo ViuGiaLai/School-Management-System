@@ -19,5 +19,49 @@
     "studentDesc": "Đăng nhập với tư cách học sinh để xem tài liệu và bài tập.",
     "teacher": "Giáo viên",
     "teacherDesc": "Đăng nhập với tư cách giáo viên để tạo khóa học, bài tập và theo dõi tiến độ học sinh."
-  }
+  },
+  "adminLogin": {
+    "title": "Đăng nhập quản trị - Hệ thống trường học",
+    "heading": "Đăng nhập quản trị"
+  },
+  "teacherLogin": {
+    "title": "Đăng nhập giáo viên - Hệ thống trường học",
+    "heading": "Giáo viên đăng nhập"
+  },
+  "studentLogin": {
+    "title": "Đăng nhập học sinh - Hệ thống trường học",
+    "heading": "Học sinh đăng nhập"
+  },
+  "login": {
+    "welcome": "Chào mừng trở lại! Vui lòng nhập thông tin của bạn",
+    "rollNumber": "Nhập mã số học sinh",
+    "rollNumberRequired": "Vui lòng nhập mã số học sinh",
+    "studentName": "Nhập họ tên",
+    "nameRequired": "Vui lòng nhập họ tên",
+    "email": "Nhập email",
+    "emailRequired": "Vui lòng nhập email",
+    "password": "Mật khẩu",
+    "passwordRequired": "Vui lòng nhập mật khẩu",
+    "forgot": "Quên mật khẩu?",
+    "remember": "Ghi nhớ đăng nhập"
+  },
+  "adminRegister": {
+    "title": "Đăng ký quản trị - Hệ thống trường học",
+    "heading": "Đăng ký quản trị",
+    "desc": "Tạo trường học của riêng bạn bằng cách đăng ký tài khoản quản trị.\nBạn sẽ có thể thêm học sinh, giáo viên và quản lý hệ thống.",
+    "name": "Nhập họ tên",
+    "nameRequired": "Vui lòng nhập họ tên",
+    "schoolName": "Tạo tên trường học",
+    "schoolNameRequired": "Vui lòng nhập tên trường học",
+    "email": "Nhập email",
+    "emailRequired": "Vui lòng nhập email",
+    "password": "Mật khẩu",
+    "passwordRequired": "Vui lòng nhập mật khẩu",
+    "registerBtn": "Đăng ký",
+    "alreadyAccount": "Đã có tài khoản?",
+    "loginBtn": "Đăng nhập"
+  },
+  "adminDashboard": {
+  "title": "Bảng điều khiển quản trị"
+}
 }

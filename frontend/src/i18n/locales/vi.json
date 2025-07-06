@@ -1,0 +1,23 @@
+{
+  "homepage": {
+    "title": "Chào mừng đến với Hệ thống Quản lý Lớp học",
+    "description": "Quản lý lớp học, sắp xếp lịch học, thêm học sinh và giáo viên dễ dàng. Theo dõi điểm danh, đánh giá kết quả và gửi thông báo nhanh chóng."
+  },
+  "button": {
+    "login": "Đăng nhập",
+    "guest": "Đăng nhập với tư cách Khách",
+    "signup": "Đăng ký",
+    "back": "Quay lại"
+  },
+  "form": {
+    "noAccount": "Chưa có tài khoản?"
+  },
+  "chooseuser": {
+    "admin": "Quản trị viên",
+    "adminDesc": "Đăng nhập với tư cách quản trị viên để truy cập bảng điều khiển và quản lý dữ liệu ứng dụng.",
+    "student": "Học sinh",
+    "studentDesc": "Đăng nhập với tư cách học sinh để xem tài liệu và bài tập.",
+    "teacher": "Giáo viên",
+    "teacherDesc": "Đăng nhập với tư cách giáo viên để tạo khóa học, bài tập và theo dõi tiến độ học sinh."
+  }
+}

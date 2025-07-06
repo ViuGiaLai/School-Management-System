@@ -1,0 +1,23 @@
+{
+  "homepage": {
+    "title": "Welcome to the School Management System",
+    "description": "Manage classes, schedule lessons, and add students and teachers with ease. Track attendance, monitor performance, and share important updates instantly."
+  },
+  "button": {
+    "login": "Login",
+    "guest": "Login as Guest",
+    "signup": "Sign up",
+    "back": "Back"
+  },
+  "form": {
+    "noAccount": "Don't have an account?"
+  },
+  "chooseuser": {
+    "admin": "Admin",
+    "adminDesc": "Login as an administrator to access the dashboard to manage app data.",
+    "student": "Student",
+    "studentDesc": "Login as a student to explore course materials and assignments.",
+    "teacher": "Teacher",
+    "teacherDesc": "Login as a teacher to create courses, assignments, and track student progress."
+  }
+}

@@ -1,0 +1,72 @@
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&display=swap');
+
+.homepage-wrapper {
+  min-height: 100vh;
+  padding: 20px;
+  font-family: 'Be Vietnam Pro', 'Quicksand', 'Roboto', Arial, Helvetica, sans-serif;
+}
+
+.homepage-topbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+.homepage-container {
+  padding: 40px 20px;
+}
+
+
+.homepage-title {
+  font-size: 2.6rem;
+  font-weight: 800;
+  color: #252525;
+  margin-bottom: 24px;
+}
+
+.homepage-text {
+  font-size: 1rem;
+  color: #555;
+  line-height: 1.6;
+  margin: 16px 0;
+  text-align: left;
+}
+
+.homepage-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.homepage-link {
+  text-decoration: none;
+  width: 100%;
+}
+
+
+/* Mobile: dưới 768px */
+@media screen and (max-width: 768px) {
+  .homepage-container {
+    flex-direction: column;
+    padding: 20px;
+    gap: 20px;
+  }
+  .homepage-box button {
+    font-size: 14px;
+  }
+  .homepage-container img {
+    width: 100%;
+    height: auto;
+  }
+  .homepage-title{
+    font-size: 2rem;
+    text-align: center;
+  }
+  .homepage-text {
+    text-align: center;
+  }
+
+
+}

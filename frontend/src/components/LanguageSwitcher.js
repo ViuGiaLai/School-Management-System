@@ -60,10 +60,10 @@ export const LanguageSwitcherWrapper = styled.div`
   gap: 10px;
   padding: 8px 12px;
   border-radius: 2px;
-  margin-right: 70px;
   background-color: rgb(255, 255, 255);
+
   @media (max-width: 768px) {
-    right: 8px;
-    top: 8px;
+    top: 10px;
+    width: 170px;
   }
 `;

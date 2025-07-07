@@ -61,7 +61,17 @@
     "alreadyAccount": "Already have an account?",
     "loginBtn": "Log in"
   },
+  "forgotPassword": {
+    "title": "Forgot password?",
+    "desc": "Enter your email to receive a password reset link.",
+    "emailPlaceholder": "Enter your email",
+    "sendBtn": "Send reset link",
+    "success": "If the email exists, we have sent a reset link.",
+    "error": "An error occurred. Please try again.",
+    "backToLogin": "Back to login",
+    "note": "We will send a link if the email exists."
+  },
   "adminDashboard": {
-  "title": "Admin Dashboard"
-}
+    "title": "Admin Dashboard"
+  }
 }

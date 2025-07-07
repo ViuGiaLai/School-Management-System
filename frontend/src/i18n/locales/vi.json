@@ -61,7 +61,17 @@
     "alreadyAccount": "Đã có tài khoản?",
     "loginBtn": "Đăng nhập"
   },
+  "forgotPassword": {
+    "title": "Quên mật khẩu?",
+    "desc": "Nhập email để nhận liên kết đặt lại mật khẩu.",
+    "emailPlaceholder": "Nhập email của bạn",
+    "sendBtn": "Gửi liên kết đặt lại mật khẩu",
+    "success": "Nếu email tồn tại, chúng tôi đã gửi liên kết đặt lại mật khẩu.",
+    "error": "Đã xảy ra lỗi. Vui lòng thử lại.",
+    "backToLogin": "Quay lại đăng nhập",
+    "note": "Chúng tôi sẽ gửi liên kết nếu email tồn tại."
+  },
   "adminDashboard": {
-  "title": "Bảng điều khiển quản trị"
-}
+    "title": "Bảng điều khiển quản trị"
+  }
 }

@@ -17,9 +17,16 @@ export const loginUser = (fields, role) => async (dispatch) => {
     dispatch(authRequest());
 
     try {
-        const result = await axios.post(`${process.env.REACT_APP_BASE_URL}/${role}Login`, fields, {
-            headers: { 'Content-Type': 'application/json' },
-        });
+        // Xác định module cho từng role
+        let module = 'auth';
+        if (role === 'Student') module = 'students';
+        else if (role === 'Teacher') module = 'teachers';
+
+        const result = await axios.post(
+            `${process.env.REACT_APP_BASE_URL}/api/${module}/${role}Login`,
+            fields,
+            { headers: { 'Content-Type': 'application/json' } }
+        );
         if (result.data.role) {
             dispatch(authSuccess(result.data));
         } else {
@@ -34,9 +41,15 @@ export const registerUser = (fields, role) => async (dispatch) => {
     dispatch(authRequest());
 
     try {
-        const result = await axios.post(`${process.env.REACT_APP_BASE_URL}/${role}Reg`, fields, {
-            headers: { 'Content-Type': 'application/json' },
-        });
+        let module = 'auth';
+        if (role === 'Student') module = 'students';
+        else if (role === 'Teacher') module = 'teachers';
+
+        const result = await axios.post(
+            `${process.env.REACT_APP_BASE_URL}/api/${module}/${role}Reg`,
+            fields,
+            { headers: { 'Content-Type': 'application/json' } }
+        );
         console.log("Register API result:", result.data); // Thêm log để kiểm tra dữ liệu trả về
 
         // Kiểm tra trường hợp thành công dựa trên dữ liệu thực tế trả về
@@ -62,7 +75,14 @@ export const getUserDetails = (id, address) => async (dispatch) => {
     dispatch(getRequest());
 
     try {
-        const result = await axios.get(`${process.env.REACT_APP_BASE_URL}/${address}/${id}`);
+        // address ví dụ: 'Admin', 'Student', 'Teacher'
+        let module = 'auth';
+        if (address === 'Student') module = 'students';
+        else if (address === 'Teacher') module = 'teachers';
+
+        const result = await axios.get(
+            `${process.env.REACT_APP_BASE_URL}/api/${module}/${address}/${id}`
+        );
         if (result.data) {
             dispatch(doneSuccess(result.data));
         }
@@ -75,7 +95,13 @@ export const getUserDetails = (id, address) => async (dispatch) => {
 //     dispatch(getRequest());
 
 //     try {
-//         const result = await axios.delete(`${process.env.REACT_APP_BASE_URL}/${address}/${id}`);
+//         let module = 'auth';
+//         if (address === 'Student') module = 'students';
+//         else if (address === 'Teacher') module = 'teachers';
+
+//         const result = await axios.delete(
+//             `${process.env.REACT_APP_BASE_URL}/api/${module}/${address}/${id}`
+//         );
 //         if (result.data.message) {
 //             dispatch(getFailed(result.data.message));
 //         } else {
@@ -86,7 +112,6 @@ export const getUserDetails = (id, address) => async (dispatch) => {
 //     }
 // }
 
-
 export const deleteUser = (id, address) => async (dispatch) => {
     dispatch(getRequest());
     dispatch(getFailed("Sorry the delete function has been disabled for now."));
@@ -96,9 +121,15 @@ export const updateUser = (fields, id, address) => async (dispatch) => {
     dispatch(getRequest());
 
     try {
-        const result = await axios.put(`${process.env.REACT_APP_BASE_URL}/${address}/${id}`, fields, {
-            headers: { 'Content-Type': 'application/json' },
-        });
+        let module = 'auth';
+        if (address === 'Student') module = 'students';
+        else if (address === 'Teacher') module = 'teachers';
+
+        const result = await axios.put(
+            `${process.env.REACT_APP_BASE_URL}/api/${module}/${address}/${id}`,
+            fields,
+            { headers: { 'Content-Type': 'application/json' } }
+        );
         if (result.data.schoolName) {
             dispatch(authSuccess(result.data));
         }
@@ -113,10 +144,17 @@ export const updateUser = (fields, id, address) => async (dispatch) => {
 export const addStuff = (fields, address) => async (dispatch) => {
     dispatch(authRequest());
 
+    // address ví dụ: 'Student', 'Teacher', 'Admin'
+    let module = 'auth';
+    if (address === 'Student') module = 'students';
+    else if (address === 'Teacher') module = 'teachers';
+
     try {
-        const result = await axios.post(`${process.env.REACT_APP_BASE_URL}/${address}Create`, fields, {
-            headers: { 'Content-Type': 'application/json' },
-        });
+        const result = await axios.post(
+            `${process.env.REACT_APP_BASE_URL}/api/${module}/${address}Create`,
+            fields,
+            { headers: { 'Content-Type': 'application/json' } }
+        );
 
         if (result.data.message) {
             dispatch(authFailed(result.data.message));

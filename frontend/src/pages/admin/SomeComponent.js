@@ -26,12 +26,9 @@ export const updateStudentFields = (id, fields, address) => async (dispatch) => 
     dispatch(getRequest());
 
     try {
-        // address ví dụ: 'Student', 'UpdateExamResult', ...
-        const result = await axios.put(
-            `${process.env.REACT_APP_BASE_URL}/api/students/${address}/${id}`,
-            fields,
-            { headers: { 'Content-Type': 'application/json' } }
-        );
+        const result = await axios.put(`${process.env.REACT_APP_BASE_URL}/${address}/${id}`, fields, {
+            headers: { 'Content-Type': 'application/json' },
+        });
         if (result.data.message) {
             dispatch(getFailed(result.data.message));
         } else {
@@ -46,9 +43,37 @@ export const removeStuff = (id, address) => async (dispatch) => {
     dispatch(getRequest());
 
     try {
-        const result = await axios.put(
-            `${process.env.REACT_APP_BASE_URL}/api/students/${address}/${id}`
-        );
+        const result = await axios.put(`${process.env.REACT_APP_BASE_URL}/${address}/${id}`);
+        if (result.data.message) {
+            dispatch(getFailed(result.data.message));
+        } else {
+            dispatch(stuffDone());
+        }
+    } catch (error) {
+        dispatch(getError(error));
+    }
+}
+
+export const getClassList = (id) => async (dispatch) => {
+    dispatch(getRequest());
+
+    try {
+        const result = await axios.get(`${process.env.REACT_APP_BASE_URL}/api/classes/SclassList/${id}`);
+        if (result.data.message) {
+            dispatch(getFailed(result.data.message));
+        } else {
+            dispatch(getSuccess(result.data));
+        }
+    } catch (error) {
+        dispatch(getError(error));
+    }
+}
+
+export const deleteSubject = (id) => async (dispatch) => {
+    dispatch(getRequest());
+
+    try {
+        const result = await axios.delete(`${process.env.REACT_APP_BASE_URL}/api/subjects/Subject/${id}`);
         if (result.data.message) {
             dispatch(getFailed(result.data.message));
         } else {

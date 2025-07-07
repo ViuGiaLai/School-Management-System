@@ -60,7 +60,6 @@ const AdminDashboard = () => {
             <Box sx={{ display: 'flex' }}>
                 <CssBaseline />
                 <AppBar open={open} position='absolute'>
-                    <LanguageSwitcher style={{ marginTop: '20px', textAlign: 'center' }} />
                     <Toolbar sx={{ pr: '24px' }}>
                         <IconButton
                             edge="start"

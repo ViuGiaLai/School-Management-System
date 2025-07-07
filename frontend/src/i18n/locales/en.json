@@ -69,7 +69,17 @@
     "success": "If the email exists, we have sent a reset link.",
     "error": "An error occurred. Please try again.",
     "backToLogin": "Back to login",
-    "note": "We will send a link if the email exists."
+    "note": "We will send a link if the email exists.",
+    "sendingBtn": "Loading..."
+  },
+  "resetPassword": {
+    "title": "Reset password",
+    "placeholder": "Enter new password",
+    "confirm": "Confirm",
+    "loading": "Processing...",
+    "success": "Password reset successfully!",
+    "error": "Password reset failed! The token may have expired.",
+    "enterNewPassword": "Please enter a new password"
   },
   "adminDashboard": {
     "title": "Admin Dashboard"

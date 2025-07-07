@@ -9,6 +9,7 @@ import LoginPage from './pages/LoginPage';
 import AdminRegisterPage from './pages/admin/AdminRegisterPage';
 import ChooseUser from './pages/ChooseUser';
 import ForgotPasswordPage from './pages/admin/ForgotPasswordPage';
+import ResetPasswordPage from './pages/admin/ResetPasswordPage';
 
 const App = () => {
   const { currentRole } = useSelector(state => state.user);
@@ -27,6 +28,7 @@ const App = () => {
 
           <Route path="/Adminregister" element={<AdminRegisterPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
 
           <Route path='*' element={<Navigate to="/" />} />
         </Routes>}

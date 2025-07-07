@@ -69,7 +69,17 @@
     "success": "Nếu email tồn tại, chúng tôi đã gửi liên kết đặt lại mật khẩu.",
     "error": "Đã xảy ra lỗi. Vui lòng thử lại.",
     "backToLogin": "Quay lại đăng nhập",
-    "note": "Chúng tôi sẽ gửi liên kết nếu email tồn tại."
+    "note": "Chúng tôi sẽ gửi liên kết nếu email tồn tại.",
+    "sendingBtn": "Đang gửi..."
+  },
+  "resetPassword": {
+    "title": "Đặt lại mật khẩu",
+    "placeholder": "Nhập mật khẩu mới",
+    "confirm": "Xác nhận",
+    "loading": "Đang xử lý...",
+    "success": "Đặt lại mật khẩu thành công!",
+    "error": "Lỗi đặt lại mật khẩu! Token có thể đã hết hạn.",
+    "enterNewPassword": "Vui lòng nhập mật khẩu mới"
   },
   "adminDashboard": {
     "title": "Bảng điều khiển quản trị"

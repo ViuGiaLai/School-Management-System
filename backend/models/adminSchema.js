@@ -22,6 +22,12 @@ const adminSchema = new mongoose.Schema({
         type: String,
         unique: true,
         required: true
+    },
+    resetToken: {
+        type: String
+    },
+    tokenExpires: {
+        type: Date
     }
 });
 

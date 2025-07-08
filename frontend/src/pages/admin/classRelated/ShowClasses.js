@@ -128,7 +128,7 @@ const ShowClasses = () => {
   }
 
   const AddClassButton = () => (
-    <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 2 ,marginTop: 2, paddingRight: 2 }}>
+    <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 2, marginTop: 2, paddingRight: 2 }}>
       <GreenButton variant="contained" onClick={() => navigate("/Admin/addclass")}>
         Add Class
       </GreenButton>

@@ -2,218 +2,154 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { registerUser } from '../../../redux/userRelated/userHandle';
-import Popup from '../../../components/Popup';
 import { underControl } from '../../../redux/userRelated/userSlice';
 import { getAllSclasses } from '../../../redux/sclassRelated/sclassHandle';
-import { CircularProgress } from '@mui/material';
+import { Row, Col, Form, Input, Button, Select, DatePicker, Typography, message, Spin } from 'antd';
+import Popup from '../../../components/Popup';
+
+const { Title } = Typography;
+const { Option } = Select;
 
 const AddStudent = ({ situation }) => {
-    const dispatch = useDispatch()
-    const navigate = useNavigate()
-    const params = useParams()
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const params = useParams();
 
-    const userState = useSelector(state => state.user);
-    const { status, currentUser, response, error } = userState;
-    const { sclassesList } = useSelector((state) => state.sclass);
+  const userState = useSelector(state => state.user);
+  const { status, currentUser, response, error } = userState;
+  const { sclassesList } = useSelector(state => state.sclass);
 
-    const [name, setName] = useState('');
-    const [rollNum, setRollNum] = useState('');
-    const [password, setPassword] = useState('')
-    const [className, setClassName] = useState('')
-    const [sclassName, setSclassName] = useState('')
-    const [email, setEmail] = useState('');
-    const [phoneNumber, setPhoneNumber] = useState('');
-    const [dob, setDob] = useState('');
-    const [gender, setGender] = useState('');
-    const [address, setAddress] = useState('');
-    const [academicYear, setAcademicYear] = useState('');
+  const [form] = Form.useForm();
+  const [loader, setLoader] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupMessage, setPopupMessage] = useState('');
 
-    const adminID = currentUser._id
-    const role = "Student"
-    const attendance = []
+  const adminID = currentUser._id;
+  const role = 'Student';
 
-    useEffect(() => {
-        if (situation === "Class") {
-            setSclassName(params.id);
-        }
-    }, [params.id, situation]);
+  useEffect(() => {
+    dispatch(getAllSclasses(adminID, 'Sclass'));
+  }, [adminID, dispatch]);
 
-    const [showPopup, setShowPopup] = useState(false);
-    const [message, setMessage] = useState("");
-    const [loader, setLoader] = useState(false)
-
-    useEffect(() => {
-        dispatch(getAllSclasses(adminID, "Sclass"));
-    }, [adminID, dispatch]);
-
-    const changeHandler = (event) => {
-        if (event.target.value === 'Select Class') {
-            setClassName('Select Class');
-            setSclassName('');
-        } else {
-            const selectedClass = sclassesList.find(
-                (classItem) => classItem.sclassName === event.target.value
-            );
-            setClassName(selectedClass.sclassName);
-            setSclassName(selectedClass._id);
-        }
+  useEffect(() => {
+    if (situation === 'Class') {
+      form.setFieldValue('sclassName', params.id);
     }
+  }, [params.id, situation, form]);
 
+  useEffect(() => {
+    if (status === 'added') {
+      dispatch(underControl());
+      message.success('Student added successfully');
+      navigate(-1);
+    } else if (status === 'failed') {
+      setPopupMessage(response);
+      setShowPopup(true);
+      setLoader(false);
+    } else if (status === 'error') {
+      setPopupMessage('Network Error');
+      setShowPopup(true);
+      setLoader(false);
+    }
+  }, [status, navigate, response, error, dispatch]);
+
+  const onFinish = (values) => {
+    if (!values.sclassName) {
+      setPopupMessage('Please select a class');
+      setShowPopup(true);
+      return;
+    }
+    setLoader(true);
     const fields = {
-        name,
-        rollNum,
-        password,
-        sclassName,
-        adminID,
-        role,
-        attendance,
-        email,
-        phoneNumber,
-        dob,
-        gender,
-        address,
-        academicYear,
+      ...values,
+      sclassName: values.sclassName,
+      adminID,
+      role,
+      attendance: [],
     };
+    dispatch(registerUser(fields, role));
+  };
 
-    const submitHandler = (event) => {
-        event.preventDefault()
-        if (sclassName === "") {
-            setMessage("Please select a classname")
-            setShowPopup(true)
-        }
-        else {
-            setLoader(true)
-            dispatch(registerUser(fields, role))
-        }
-    }
+  return (
+    <>
+      <div style={{ maxWidth: 1000, margin: '0 auto', padding: 24, background: '#fff', borderRadius: 8 }}>
+        <Title level={3} style={{ textAlign: 'center' }}>Add Student</Title>
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={onFinish}
+          autoComplete="off"
+        >
+          <Row gutter={16}>
+            {/* Cột trái */}
+            <Col xs={24} sm={12}>
+              <Form.Item label="Name" name="name" rules={[{ required: true }]}>
+                <Input placeholder="Enter name" style={{ height: 48 }} />
+              </Form.Item>
 
-    useEffect(() => {
-        if (status === 'added') {
-            dispatch(underControl())
-            navigate(-1)
-        }
-        else if (status === 'failed') {
-            setMessage(response)
-            setShowPopup(true)
-            setLoader(false)
-        }
-        else if (status === 'error') {
-            setMessage("Network Error")
-            setShowPopup(true)
-            setLoader(false)
-        }
-    }, [status, navigate, error, response, dispatch]);
+              {situation === 'Student' && (
+                <Form.Item label="Class" name="sclassName" rules={[{ required: true }]}>
+                  <Select placeholder="Select Class" style={{ height: 48 }}>
+                    {sclassesList.map((cls) => (
+                      <Option key={cls._id} value={cls._id}>{cls.sclassName}</Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              )}
 
-    return (
-        <>
-            <div className="register">
-                <form className="registerForm" onSubmit={submitHandler}>
-                    <span className="registerTitle">Add Student</span>
-                    <label>Name</label>
-                    <input className="registerInput" type="text" placeholder="Enter student's name..."
-                        value={name}
-                        onChange={(event) => setName(event.target.value)}
-                        autoComplete="name" required />
+              <Form.Item label="Roll Number" name="rollNum" rules={[{ required: true }]}>
+                <Input type="number" placeholder="Enter Roll Number" style={{ height: 48 }} />
+              </Form.Item>
 
-                    {
-                        situation === "Student" &&
-                        <>
-                            <label>Class</label>
-                            <select
-                                className="registerInput"
-                                value={className}
-                                onChange={changeHandler} required>
-                                <option value='Select Class'>Select Class</option>
-                                {sclassesList.map((classItem, index) => (
-                                    <option key={index} value={classItem.sclassName}>
-                                        {classItem.sclassName}
-                                    </option>
-                                ))}
-                            </select>
-                        </>
-                    }
+              <Form.Item label="Password" name="password" rules={[{ required: true }]}>
+                <Input.Password placeholder="Enter Password" style={{ height: 48 }} />
+              </Form.Item>
 
-                    <label>Roll Number</label>
-                    <input className="registerInput" type="number" placeholder="Enter student's Roll Number..."
-                        value={rollNum}
-                        onChange={(event) => setRollNum(event.target.value)}
-                        required />
+              <Form.Item label="Email" name="email" rules={[{ required: true, type: 'email' }]}>
+                <Input placeholder="Enter Email" style={{ height: 48 }} />
+              </Form.Item>
 
-                    <label>Password</label>
-                    <input className="registerInput" type="password" placeholder="Enter student's password..."
-                        value={password}
-                        onChange={(event) => setPassword(event.target.value)}
-                        autoComplete="new-password" required />
+              <Form.Item label="Phone Number" name="phoneNumber">
+                <Input placeholder="Enter phone number" style={{ height: 48 }} />
+              </Form.Item>
+            </Col>
 
-                    <label>Email</label>
-                    <input
-                        className="registerInput"
-                        type="email"
-                        placeholder="Enter student's email..."
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
+            {/* Cột phải */}
+            <Col xs={24} sm={12}>
+              <Form.Item label="Date of Birth" name="dob" >
+                <DatePicker style={{ width: '100%', height: 48 }} />
+              </Form.Item>
 
-                    <label>Phone Number</label>
-                    <input
-                        className="registerInput"
-                        type="text"
-                        placeholder="Enter phone number..."
-                        value={phoneNumber}
-                        onChange={(e) => setPhoneNumber(e.target.value)}
-                    />
+              <Form.Item label="Gender" name="gender">
+                <Select placeholder="Select Gender" style={{ height: 48 }}>
+                  <Option value="Male">Male</Option>
+                  <Option value="Female">Female</Option>
+                  <Option value="Other">Other</Option>
+                </Select>
+              </Form.Item>
 
-                    <label>Date of Birth</label>
-                    <input
-                        className="registerInput"
-                        type="date"
-                        value={dob}
-                        onChange={(e) => setDob(e.target.value)}
-                    />
+              <Form.Item label="Address" name="address">
+                <Input placeholder="Enter Address" style={{ height: 48 }} />
+              </Form.Item>
 
-                    <label>Gender</label>
-                    <select
-                        className="registerInput"
-                        value={gender}
-                        onChange={(e) => setGender(e.target.value)}
-                    >
-                        <option value="">Select Gender</option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                        <option value="Other">Other</option>
-                    </select>
+              <Form.Item label="Academic Year" name="academicYear">
+                <Input placeholder="e.g. 2023-2027" style={{ height: 48 }} />
+              </Form.Item>
+            </Col>
+          </Row>
 
-                    <label>Address</label>
-                    <input
-                        className="registerInput"
-                        type="text"
-                        placeholder="Enter address..."
-                        value={address}
-                        onChange={(e) => setAddress(e.target.value)}
-                    />
+          {/* Hàng cuối */}
+          <Form.Item style={{ textAlign: 'center' }}>
+            <Button type="primary" htmlType="submit" size="large" disabled={loader}>
+              {loader ? <Spin /> : 'Add Student'}
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
 
-                    <label>Academic Year</label>
-                    <input
-                        className="registerInput"
-                        type="text"
-                        placeholder="e.g., 2023-2027"
-                        value={academicYear}
-                        onChange={(e) => setAcademicYear(e.target.value)}
-                    />
+      <Popup message={popupMessage} setShowPopup={setShowPopup} showPopup={showPopup} />
+    </>
+  );
+};
 
-                    <button className="registerButton" type="submit" disabled={loader}>
-                        {loader ? (
-                            <CircularProgress size={24} color="inherit" />
-                        ) : (
-                            'Add'
-                        )}
-                    </button>
-                </form>
-            </div>
-            <Popup message={message} setShowPopup={setShowPopup} showPopup={showPopup} />
-        </>
-    )
-}
-
-export default AddStudent
+export default AddStudent;

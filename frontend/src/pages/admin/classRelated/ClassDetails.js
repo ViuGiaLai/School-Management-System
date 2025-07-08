@@ -211,43 +211,68 @@ const ClassDetails = () => {
         )
     }
 
-    const ClassDetailsSection = () => {
-        const numberOfSubjects = subjectsList.length;
-        const numberOfStudents = sclassStudents.length;
-
-        return (
-            <>
-                <Typography variant="h4" align="center" gutterBottom>
-                    Class Details
-                </Typography>
-                <Typography variant="h5" gutterBottom>
-                    This is Class {sclassDetails && sclassDetails.sclassName}
-                </Typography>
+    const ClassDetailsSection = () => (
+        <>
+            <Typography variant="h4" align="center" gutterBottom>
+                Class Details
+            </Typography>
+            <Typography variant="h5" gutterBottom>
+                {`Class Name: ${sclassDetails?.sclassName || "N/A"}`}
+            </Typography>
+            <Typography variant="h6" gutterBottom>
+                {`Class Code: ${sclassDetails?.classCode || "N/A"}`}
+            </Typography>
+            <Typography variant="h6" gutterBottom>
+                {`Academic Year: ${sclassDetails?.academicYear || "N/A"}`}
+            </Typography>
+            <Typography variant="h6" gutterBottom>
+                {`Semester: ${sclassDetails?.semester === "semester1" ? "Semester 1"
+                        : sclassDetails?.semester === "semester2" ? "Semester 2"
+                            : sclassDetails?.semester === "summer" ? "Summer"
+                                : "N/A"
+                    }`}
+            </Typography>
+            <Typography variant="h6" gutterBottom>
+                {`Department: ${sclassDetails?.department || "N/A"}`}
+            </Typography>
+            <Typography variant="h6" gutterBottom>
+                {`Homeroom Teacher: ${sclassDetails?.homeroomTeacher?.name || "N/A"}`}
+            </Typography>
+            <Typography variant="h6" gutterBottom>
+                {`Number of Subjects: ${subjectsList?.length || 0}`}
+            </Typography>
+            <Typography variant="h6" gutterBottom>
+                {`Number of Students: ${sclassStudents?.length || 0}`}
+            </Typography>
+            <Typography variant="h6" gutterBottom>
+                {`Status: ${sclassDetails?.status || "N/A"}`}
+            </Typography>
+            {sclassDetails?.notes && (
                 <Typography variant="h6" gutterBottom>
-                    Number of Subjects: {numberOfSubjects}
+                    {`Notes: ${sclassDetails.notes}`}
                 </Typography>
-                <Typography variant="h6" gutterBottom>
-                    Number of Students: {numberOfStudents}
-                </Typography>
-                {getresponse &&
+            )}
+            <Box sx={{ display: 'flex', gap: 2, mt: 2, flexWrap: 'wrap' }}>
+                {getresponse && (
                     <GreenButton
                         variant="contained"
                         onClick={() => navigate("/Admin/class/addstudents/" + classID)}
                     >
                         Add Students
                     </GreenButton>
-                }
-                {response &&
+                )}
+                {response && (
                     <GreenButton
                         variant="contained"
                         onClick={() => navigate("/Admin/addsubject/" + classID)}
                     >
                         Add Subjects
                     </GreenButton>
-                }
-            </>
-        );
-    }
+                )}
+            </Box>
+        </>
+    );
+
 
     return (
         <>

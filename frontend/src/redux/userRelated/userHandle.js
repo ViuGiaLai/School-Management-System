@@ -46,7 +46,7 @@ export const registerUser = (fields, role) => async (dispatch) => {
         else if (role === 'Teacher') module = 'teachers';
 
         const result = await axios.post(
-            `${process.env.REACT_APP_BASE_URL}/api/${module}/${role}Reg`,
+            `${process.env.REACT_APP_BASE_URL}/api/${module}/${role}Create`,
             fields,
             { headers: { 'Content-Type': 'application/json' } }
         );

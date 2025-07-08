@@ -2,7 +2,11 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Grid, Box, Typography, Paper, Checkbox, FormControlLabel, TextField, CssBaseline, IconButton, InputAdornment, CircularProgress} from '@mui/material';
+import {
+    Grid, Box, Typography, Paper, Checkbox, FormControlLabel,
+    TextField, CssBaseline, IconButton, InputAdornment,
+    CircularProgress
+} from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import bgpic from "../../assets/designlogin.jpg"
@@ -17,14 +21,13 @@ import LanguageSwitcher from '../../components/LanguageSwitcher';
 const defaultTheme = createTheme();
 
 const AdminRegisterPage = () => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
-    const dispatch = useDispatch()
-    const navigate = useNavigate()
+    const { status, currentUser, response, error, currentRole } = useSelector(state => state.user);
 
-    const { status, currentUser, response, error, currentRole } = useSelector(state => state.user);;
-
-    const [toggle, setToggle] = useState(false)
-    const [loader, setLoader] = useState(false)
+    const [toggle, setToggle] = useState(false);
+    const [loader, setLoader] = useState(false);
     const [showPopup, setShowPopup] = useState(false);
     const [message, setMessage] = useState("");
 
@@ -32,7 +35,7 @@ const AdminRegisterPage = () => {
     const [passwordError, setPasswordError] = useState(false);
     const [adminNameError, setAdminNameError] = useState(false);
     const [schoolNameError, setSchoolNameError] = useState(false);
-    const role = "Admin"
+    const role = "Admin";
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -50,9 +53,9 @@ const AdminRegisterPage = () => {
             return;
         }
 
-        const fields = { name, email, password, role, schoolName }
-        setLoader(true)
-        dispatch(registerUser(fields, role))
+        const fields = { name, email, password, role, schoolName };
+        setLoader(true);
+        dispatch(registerUser(fields, role));
     };
 
     const handleInputChange = (event) => {
@@ -64,42 +67,23 @@ const AdminRegisterPage = () => {
     };
 
     useEffect(() => {
-        if (status === 'success' || (currentUser !== null && currentRole === 'Admin')) {
+        if (status === 'success' || (currentUser && currentRole === 'Admin')) {
             navigate('/Admin/dashboard');
-        }
-        else if (status === 'failed') {
-            setMessage(response)
-            setShowPopup(true)
-            setLoader(false)
-        }
-        else if (status === 'error') {
-            console.log(error)
+        } else if (status === 'failed') {
+            setMessage(response);
+            setShowPopup(true);
+            setLoader(false);
+        } else if (status === 'error') {
+            console.log(error);
         }
     }, [status, currentUser, currentRole, navigate, error, response]);
 
     const { t } = useTranslation();
 
-    // i18n keys
-    const titleKey = 'adminRegister.title';
-    const headingKey = 'adminRegister.heading';
-    const descKey = 'adminRegister.desc';
-    const nameLabelKey = 'adminRegister.name';
-    const nameRequiredKey = 'adminRegister.nameRequired';
-    const schoolNameLabelKey = 'adminRegister.schoolName';
-    const schoolNameRequiredKey = 'adminRegister.schoolNameRequired';
-    const emailLabelKey = 'adminRegister.email';
-    const emailRequiredKey = 'adminRegister.emailRequired';
-    const passwordLabelKey = 'adminRegister.password';
-    const passwordRequiredKey = 'adminRegister.passwordRequired';
-    const rememberKey = 'login.remember';
-    const registerBtnKey = 'adminRegister.registerBtn';
-    const alreadyAccountKey = 'adminRegister.alreadyAccount';
-    const loginBtnKey = 'adminRegister.loginBtn';
-
     return (
         <ThemeProvider theme={defaultTheme}>
             <Helmet>
-                <title>{t(titleKey)}</title>
+                <title>{t('adminRegister.title')}</title>
             </Helmet>
             <LanguageSwitcher />
             <Grid container component="main" sx={{ height: '100vh' }}>
@@ -115,10 +99,10 @@ const AdminRegisterPage = () => {
                         }}
                     >
                         <Typography variant="h4" sx={{ mb: 2, color: "#2c2143" }}>
-                            {t(headingKey)}
+                            {t('adminRegister.heading')}
                         </Typography>
                         <Typography variant="h7">
-                            {t(descKey)}
+                            {t('adminRegister.desc')}
                         </Typography>
                         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 2 }}>
                             <TextField
@@ -126,12 +110,12 @@ const AdminRegisterPage = () => {
                                 required
                                 fullWidth
                                 id="adminName"
-                                label={t(nameLabelKey)}
+                                label={t('adminRegister.name')}
                                 name="adminName"
                                 autoComplete="name"
                                 autoFocus
                                 error={adminNameError}
-                                helperText={adminNameError && t(nameRequiredKey)}
+                                helperText={adminNameError && t('adminRegister.nameRequired')}
                                 onChange={handleInputChange}
                             />
                             <TextField
@@ -139,11 +123,11 @@ const AdminRegisterPage = () => {
                                 required
                                 fullWidth
                                 id="schoolName"
-                                label={t(schoolNameLabelKey)}
+                                label={t('adminRegister.schoolName')}
                                 name="schoolName"
                                 autoComplete="off"
                                 error={schoolNameError}
-                                helperText={schoolNameError && t(schoolNameRequiredKey)}
+                                helperText={schoolNameError && t('adminRegister.schoolNameRequired')}
                                 onChange={handleInputChange}
                             />
                             <TextField
@@ -151,11 +135,11 @@ const AdminRegisterPage = () => {
                                 required
                                 fullWidth
                                 id="email"
-                                label={t(emailLabelKey)}
+                                label={t('adminRegister.email')}
                                 name="email"
                                 autoComplete="email"
                                 error={emailError}
-                                helperText={emailError && t(emailRequiredKey)}
+                                helperText={emailError && t('adminRegister.emailRequired')}
                                 onChange={handleInputChange}
                             />
                             <TextField
@@ -163,22 +147,18 @@ const AdminRegisterPage = () => {
                                 required
                                 fullWidth
                                 name="password"
-                                label={t(passwordLabelKey)}
+                                label={t('adminRegister.password')}
                                 type={toggle ? 'text' : 'password'}
                                 id="password"
-                                autoComplete="current-password"
+                                autoComplete="new-password"
                                 error={passwordError}
-                                helperText={passwordError && t(passwordRequiredKey)}
+                                helperText={passwordError && t('adminRegister.passwordRequired')}
                                 onChange={handleInputChange}
                                 InputProps={{
                                     endAdornment: (
                                         <InputAdornment position="end">
                                             <IconButton onClick={() => setToggle(!toggle)}>
-                                                {toggle ? (
-                                                    <Visibility />
-                                                ) : (
-                                                    <VisibilityOff />
-                                                )}
+                                                {toggle ? <Visibility /> : <VisibilityOff />}
                                             </IconButton>
                                         </InputAdornment>
                                     ),
@@ -187,7 +167,7 @@ const AdminRegisterPage = () => {
                             <Grid container sx={{ display: "flex", justifyContent: "space-between" }}>
                                 <FormControlLabel
                                     control={<Checkbox value="remember" color="primary" />}
-                                    label={t(rememberKey)}
+                                    label={t('login.remember')}
                                 />
                             </Grid>
                             <LightPurpleButton
@@ -196,15 +176,15 @@ const AdminRegisterPage = () => {
                                 variant="contained"
                                 sx={{ mt: 3, mb: 2 }}
                             >
-                                {loader ? <CircularProgress size={24} color="inherit"/> : t(registerBtnKey)}
+                                {loader ? <CircularProgress size={24} color="inherit" /> : t('adminRegister.registerBtn')}
                             </LightPurpleButton>
                             <Grid container>
                                 <Grid>
-                                    {t(alreadyAccountKey)}
+                                    {t('adminRegister.alreadyAccount')}
                                 </Grid>
                                 <Grid item sx={{ ml: 2 }}>
                                     <StyledLink to="/Adminlogin">
-                                        {t(loginBtnKey)}
+                                        {t('adminRegister.loginBtn')}
                                     </StyledLink>
                                 </Grid>
                             </Grid>
@@ -229,9 +209,9 @@ const AdminRegisterPage = () => {
             <Popup message={message} setShowPopup={setShowPopup} showPopup={showPopup} />
         </ThemeProvider>
     );
-}
+};
 
-export default AdminRegisterPage
+export default AdminRegisterPage;
 
 const StyledLink = styled(Link)`
   margin-top: 9px;

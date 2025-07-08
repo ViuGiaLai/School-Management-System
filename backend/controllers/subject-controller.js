@@ -4,31 +4,34 @@ const Student = require('../models/studentSchema.js');
 
 const subjectCreate = async (req, res) => {
     try {
-        const subjects = req.body.subjects.map((subject) => ({
+        const subjects = req.body.subjects;
+
+        // Check for duplicate subCode in database
+        for (const subject of subjects) {
+            const exists = await Subject.findOne({ subCode: subject.subCode });
+            if (exists) {
+                return res.send({ message: `Subject code '${subject.subCode}' already exists.` });
+            }
+        }
+
+        const newSubjects = subjects.map(subject => ({
             subName: subject.subName,
             subCode: subject.subCode,
+            credits: subject.credits,
+            subjectType: subject.subjectType,
+            description: subject.description || '',
             sessions: subject.sessions,
+            academicYear: subject.academicYear,
+            semester: subject.semester,
+            department: subject.department,
+            sclassName: req.body.sclassName,
+            school: req.body.adminID,
         }));
 
-        const existingSubjectBySubCode = await Subject.findOne({
-            'subjects.subCode': subjects[0].subCode,
-            school: req.body.adminID,
-        });
-
-        if (existingSubjectBySubCode) {
-            res.send({ message: 'Sorry this subcode must be unique as it already exists' });
-        } else {
-            const newSubjects = subjects.map((subject) => ({
-                ...subject,
-                sclassName: req.body.sclassName,
-                school: req.body.adminID,
-            }));
-
-            const result = await Subject.insertMany(newSubjects);
-            res.send(result);
-        }
+        const result = await Subject.insertMany(newSubjects);
+        res.send(result);
     } catch (err) {
-        res.status(500).json(err);
+        res.status(500).json({ message: "Server error", error: err });
     }
 };
 

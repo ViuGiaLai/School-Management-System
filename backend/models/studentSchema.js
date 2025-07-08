@@ -7,11 +7,40 @@ const studentSchema = new mongoose.Schema({
     },
     rollNum: {
         type: Number,
-        required: true
+        required: true,
+        unique: true
+    },
+    email: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    phoneNumber: {
+        type: String,
     },
     password: {
         type: String,
         required: true
+    },
+    dob: {
+        type: Date
+    },
+    gender: {
+        type: String,
+        enum: ['Male', 'Female', 'Other']
+    },
+    address: {
+        type: String
+    },
+    avatar: {
+        type: String // URL
+    },
+    academicYear: {
+        type: String // ví dụ: "2023-2027"
+    },
+    isActive: {
+        type: Boolean,
+        default: true
     },
     sclassName: {
         type: mongoose.Schema.Types.ObjectId,
@@ -55,6 +84,6 @@ const studentSchema = new mongoose.Schema({
             required: true
         }
     }]
-});
+}, { timestamps: true });
 
 module.exports = mongoose.model("student", studentSchema);

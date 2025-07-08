@@ -7,7 +7,7 @@ const {
   removeStudentAttendanceBySubject, removeStudentAttendance
 } = require('../controllers/student_controller');
 
-router.post('/StudentReg', studentRegister);
+router.post('/StudentCreate', studentRegister);
 router.post('/StudentLogin', studentLogIn);
 
 router.get('/Students/:id', getStudents);

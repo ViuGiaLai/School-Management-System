@@ -4,32 +4,46 @@ const Subject = require('../models/subjectSchema.js');
 
 const studentRegister = async (req, res) => {
     try {
-        const salt = await bcrypt.genSalt(10);
-        const hashedPass = await bcrypt.hash(req.body.password, salt);
+        const { name, rollNum, email, password, sclassName, adminID } = req.body;
+
+        // Basic validation for required fields
+        if (!name || !rollNum || !email || !password || !sclassName || !adminID) {
+            return res.status(400).json({ message: 'Please fill all the fields' });
+        }
 
         const existingStudent = await Student.findOne({
-            rollNum: req.body.rollNum,
-            school: req.body.adminID,
-            sclassName: req.body.sclassName,
+            rollNum: rollNum,
+            school: adminID,
         });
 
         if (existingStudent) {
-            res.send({ message: 'Roll Number already exists' });
+            return res.status(409).json({ message: 'Roll Number already exists in this school.' });
         }
-        else {
-            const student = new Student({
-                ...req.body,
-                school: req.body.adminID,
-                password: hashedPass
-            });
 
-            let result = await student.save();
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
 
-            result.password = undefined;
-            res.send(result);
-        }
+        const student = new Student({
+            ...req.body,
+            password: hashedPassword,
+            school: adminID,
+        });
+
+        const result = await student.save();
+
+        const response = result.toObject();
+        delete response.password;
+
+        res.status(201).json(response);
+
     } catch (err) {
-        res.status(500).json(err);
+        // Provide detailed validation error from Mongoose
+        if (err.name === 'ValidationError') {
+            return res.status(400).json({ message: err.message });
+        }
+        // Handle other potential errors
+        console.error(err);
+        res.status(500).json({ message: 'Internal Server Error' });
     }
 };
 

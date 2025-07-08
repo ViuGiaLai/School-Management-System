@@ -23,7 +23,7 @@ const TableViewTemplate = ({ columns, rows }) => {
                         </StyledTableRow>
                     </TableHead>
                     <TableBody>
-                        {rows
+                        {(Array.isArray(rows) ? rows : [])
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row) => {
                                 return (
@@ -49,7 +49,7 @@ const TableViewTemplate = ({ columns, rows }) => {
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25, 100]}
                 component="div"
-                count={rows.length}
+                count={Array.isArray(rows) ? rows.length : 0}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={(event, newPage) => setPage(newPage)}

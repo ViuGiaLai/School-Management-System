@@ -21,6 +21,12 @@ const AddStudent = ({ situation }) => {
     const [password, setPassword] = useState('')
     const [className, setClassName] = useState('')
     const [sclassName, setSclassName] = useState('')
+    const [email, setEmail] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [dob, setDob] = useState('');
+    const [gender, setGender] = useState('');
+    const [address, setAddress] = useState('');
+    const [academicYear, setAcademicYear] = useState('');
 
     const adminID = currentUser._id
     const role = "Student"
@@ -53,7 +59,21 @@ const AddStudent = ({ situation }) => {
         }
     }
 
-    const fields = { name, rollNum, password, sclassName, adminID, role, attendance }
+    const fields = {
+        name,
+        rollNum,
+        password,
+        sclassName,
+        adminID,
+        role,
+        attendance,
+        email,
+        phoneNumber,
+        dob,
+        gender,
+        address,
+        academicYear,
+    };
 
     const submitHandler = (event) => {
         event.preventDefault()
@@ -124,6 +144,63 @@ const AddStudent = ({ situation }) => {
                         value={password}
                         onChange={(event) => setPassword(event.target.value)}
                         autoComplete="new-password" required />
+
+                    <label>Email</label>
+                    <input
+                        className="registerInput"
+                        type="email"
+                        placeholder="Enter student's email..."
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                    />
+
+                    <label>Phone Number</label>
+                    <input
+                        className="registerInput"
+                        type="text"
+                        placeholder="Enter phone number..."
+                        value={phoneNumber}
+                        onChange={(e) => setPhoneNumber(e.target.value)}
+                    />
+
+                    <label>Date of Birth</label>
+                    <input
+                        className="registerInput"
+                        type="date"
+                        value={dob}
+                        onChange={(e) => setDob(e.target.value)}
+                    />
+
+                    <label>Gender</label>
+                    <select
+                        className="registerInput"
+                        value={gender}
+                        onChange={(e) => setGender(e.target.value)}
+                    >
+                        <option value="">Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+
+                    <label>Address</label>
+                    <input
+                        className="registerInput"
+                        type="text"
+                        placeholder="Enter address..."
+                        value={address}
+                        onChange={(e) => setAddress(e.target.value)}
+                    />
+
+                    <label>Academic Year</label>
+                    <input
+                        className="registerInput"
+                        type="text"
+                        placeholder="e.g., 2023-2027"
+                        value={academicYear}
+                        onChange={(e) => setAcademicYear(e.target.value)}
+                    />
 
                     <button className="registerButton" type="submit" disabled={loader}>
                         {loader ? (

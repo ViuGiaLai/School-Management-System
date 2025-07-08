@@ -1,115 +1,128 @@
 import React, { useEffect, useState } from 'react';
+import {
+  Table,
+  Space,
+  Button,
+  Popconfirm,
+  Typography,
+  Spin,
+  message,
+} from 'antd';
+import { DeleteOutlined, PlusOutlined, EyeOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 import { getSubjectList } from '../../../redux/sclassRelated/sclassHandle';
 import { deleteUser } from '../../../redux/userRelated/userHandle';
-import PostAddIcon from '@mui/icons-material/PostAdd';
-import {
-    Paper, Box, IconButton,
-} from '@mui/material';
-import DeleteIcon from "@mui/icons-material/Delete";
-import TableTemplate from '../../../components/TableTemplate';
-import { BlueButton, GreenButton } from '../../../components/buttonStyles';
-import SpeedDialTemplate from '../../../components/SpeedDialTemplate';
-import Popup from '../../../components/Popup';
+
+const { Title } = Typography;
 
 const ShowSubjects = () => {
-    const navigate = useNavigate()
-    const dispatch = useDispatch();
-    const { subjectsList, loading, error, response } = useSelector((state) => state.sclass);
-    const { currentUser } = useSelector(state => state.user)
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        dispatch(getSubjectList(currentUser._id, "AllSubjects"));
-    }, [currentUser._id, dispatch]);
+  const { subjectsList, loading } = useSelector((state) => state.sclass);
+  const { currentUser } = useSelector((state) => state.user);
 
-    if (error) {
-        console.log(error);
+  const [deleting, setDeleting] = useState(false);
+
+  useEffect(() => {
+    if (currentUser?._id) {
+      dispatch(getSubjectList(currentUser._id, 'AllSubjects'));
     }
+  }, [dispatch, currentUser._id]);
 
-    const [showPopup, setShowPopup] = useState(false);
-    const [message, setMessage] = useState("");
-
-    const deleteHandler = (deleteID, address) => {
-        console.log(deleteID);
-        console.log(address);
-        setMessage("Sorry the delete function has been disabled for now.")
-        setShowPopup(true)
-
-        // dispatch(deleteUser(deleteID, address))
-        //     .then(() => {
-        //         dispatch(getSubjectList(currentUser._id, "AllSubjects"));
-        //     })
+  const handleDelete = async (id, isAll = false) => {
+    try {
+      setDeleting(true);
+      await dispatch(deleteUser(id, isAll ? 'Subjects' : 'Subject'));
+      dispatch(getSubjectList(currentUser._id, 'AllSubjects'));
+      message.success('Deleted successfully');
+    } catch (err) {
+      message.error('Delete failed');
+    } finally {
+      setDeleting(false);
     }
+  };
 
-    const subjectColumns = [
-        { id: 'subName', label: 'Sub Name', minWidth: 170 },
-        { id: 'sessions', label: 'Sessions', minWidth: 170 },
-        { id: 'sclassName', label: 'Class', minWidth: 170 },
-    ]
-
-    const subjectRows = subjectsList.map((subject) => {
-        return {
-            subName: subject.subName,
-            sessions: subject.sessions,
-            sclassName: subject.sclassName.sclassName,
-            sclassID: subject.sclassName._id,
-            id: subject._id,
-        };
-    })
-
-    const SubjectsButtonHaver = ({ row }) => {
-        return (
-            <>
-                <IconButton onClick={() => deleteHandler(row.id, "Subject")}>
-                    <DeleteIcon color="error" />
-                </IconButton>
-                <BlueButton variant="contained"
-                    onClick={() => navigate(`/Admin/subjects/subject/${row.sclassID}/${row.id}`)}>
-                    View
-                </BlueButton>
-            </>
-        );
-    };
-
-    const actions = [
-        {
-            icon: <PostAddIcon color="primary" />, name: 'Add New Subject',
-            action: () => navigate("/Admin/subjects/chooseclass")
-        },
-        {
-            icon: <DeleteIcon color="error" />, name: 'Delete All Subjects',
-            action: () => deleteHandler(currentUser._id, "Subjects")
-        }
-    ];
-
-    return (
-        <>
-            {loading ?
-                <div>Loading...</div>
-                :
-                <>
-                    {response ?
-                        <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: '16px' }}>
-                            <GreenButton variant="contained"
-                                onClick={() => navigate("/Admin/subjects/chooseclass")}>
-                                Add Subjects
-                            </GreenButton>
-                        </Box>
-                        :
-                        <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-                            {Array.isArray(subjectsList) && subjectsList.length > 0 &&
-                                <TableTemplate buttonHaver={SubjectsButtonHaver} columns={subjectColumns} rows={subjectRows} />
-                            }
-                            <SpeedDialTemplate actions={actions} />
-                        </Paper>
-                    }
-                </>
+  const columns = [
+    {
+      title: 'Subject Name',
+      dataIndex: 'subName',
+      key: 'subName',
+    },
+    {
+      title: 'Sessions',
+      dataIndex: 'sessions',
+      key: 'sessions',
+    },
+    {
+      title: 'Class',
+      dataIndex: 'sclassName',
+      key: 'sclassName',
+    },
+    {
+      title: 'Actions',
+      key: 'actions',
+      render: (_, record) => (
+        <Space size="middle">
+          <Button
+            icon={<EyeOutlined />}
+            onClick={() =>
+              navigate(`/Admin/subjects/subject/${record.sclassID}/${record.id}`)
             }
-            <Popup message={message} setShowPopup={setShowPopup} showPopup={showPopup} />
+          >
+            View
+          </Button>
+          <Popconfirm
+            title="Are you sure to delete this subject?"
+            onConfirm={() => handleDelete(record.id)}
+          >
+            <Button danger icon={<DeleteOutlined />} loading={deleting} />
+          </Popconfirm>
+        </Space>
+      ),
+    },
+  ];
 
-        </>
-    );
+  const data = subjectsList?.map((subject) => ({
+    key: subject._id,
+    id: subject._id,
+    subName: subject.subName,
+    sessions: subject.sessions,
+    sclassName: subject?.sclassName?.sclassName || 'N/A',
+    sclassID: subject?.sclassName?._id,
+  }));
+
+  return (
+    <div style={{ padding: '24px' }}>
+      <Title level={3}>Subjects</Title>
+
+      <Space style={{ marginBottom: 16 }}>
+        <Button
+          type="primary"
+          icon={<PlusOutlined />}
+          onClick={() => navigate('/Admin/subjects/chooseclass')}
+        >
+          Add New Subject
+        </Button>
+
+        <Popconfirm
+          title="Are you sure you want to delete all subjects?"
+          onConfirm={() => handleDelete(currentUser._id, true)}
+        >
+          <Button danger icon={<DeleteOutlined />} loading={deleting}>
+            Delete All Subjects
+          </Button>
+        </Popconfirm>
+      </Space>
+
+      {loading ? (
+        <Spin size="large" />
+      ) : (
+        <Table columns={columns} dataSource={data} bordered />
+      )}
+    </div>
+  );
 };
 
 export default ShowSubjects;

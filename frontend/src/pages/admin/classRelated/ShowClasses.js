@@ -37,14 +37,10 @@ const ShowClasses = () => {
   const [message, setMessage] = useState("");
 
   const deleteHandler = (deleteID, address) => {
-    console.log(deleteID);
-    console.log(address);
-    setMessage("Sorry the delete function has been disabled for now.")
-    setShowPopup(true)
-    // dispatch(deleteUser(deleteID, address))
-    //   .then(() => {
-    //     dispatch(getAllSclasses(adminID, "Sclass"));
-    //   })
+    dispatch(deleteUser(deleteID, address))
+      .then(() => {
+        dispatch(getAllSclasses(adminID, "Sclass"));
+      });
   }
 
   const sclassColumns = [
@@ -131,16 +127,13 @@ const ShowClasses = () => {
     );
   }
 
-  const actions = [
-    {
-      icon: <AddCardIcon color="primary" />, name: 'Add New Class',
-      action: () => navigate("/Admin/addclass")
-    },
-    {
-      icon: <DeleteIcon color="error" />, name: 'Delete All Classes',
-      action: () => deleteHandler(adminID, "Sclasses")
-    },
-  ];
+  const AddClassButton = () => (
+    <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 2 ,marginTop: 2, paddingRight: 2 }}>
+      <GreenButton variant="contained" onClick={() => navigate("/Admin/addclass")}>
+        Add Class
+      </GreenButton>
+    </Box>
+  );
 
   return (
     <>
@@ -148,23 +141,13 @@ const ShowClasses = () => {
         <div>Loading...</div>
         :
         <>
-          {getresponse ?
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: '16px' }}>
-              <GreenButton variant="contained" onClick={() => navigate("/Admin/addclass")}>
-                Add Class
-              </GreenButton>
-            </Box>
-            :
-            <>
-              {Array.isArray(sclassesList) && sclassesList.length > 0 &&
-                <TableTemplate buttonHaver={SclassButtonHaver} columns={sclassColumns} rows={sclassRows} />
-              }
-              <SpeedDialTemplate actions={actions} />
-            </>}
+          <AddClassButton />
+          {Array.isArray(sclassesList) && sclassesList.length > 0 &&
+            <TableTemplate buttonHaver={SclassButtonHaver} columns={sclassColumns} rows={sclassRows} />
+          }
         </>
       }
       <Popup message={message} setShowPopup={setShowPopup} showPopup={showPopup} />
-
     </>
   );
 };

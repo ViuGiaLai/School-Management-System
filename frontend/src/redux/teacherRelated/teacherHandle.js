@@ -19,7 +19,7 @@ export const getAllTeachers = (id) => async (dispatch) => {
             dispatch(getSuccess(result.data));
         }
     } catch (error) {
-        dispatch(getError(error));
+        dispatch(getError(error?.response?.data?.message || error.message));
     }
 }
 
@@ -32,7 +32,7 @@ export const getTeacherDetails = (id) => async (dispatch) => {
             dispatch(doneSuccess(result.data));
         }
     } catch (error) {
-        dispatch(getError(error));
+        dispatch(getError(error?.response?.data?.message || error.message));
     }
 }
 
@@ -43,6 +43,6 @@ export const updateTeachSubject = (teacherId, teachSubject) => async (dispatch) 
         await axios.put(`${process.env.REACT_APP_BASE_URL}/api/teachers/Teacher/${teacherId}`, teachSubject, { headers: { 'Content-Type': 'application/json' } });
         dispatch(postDone());
     } catch (error) {
-        dispatch(getError(error));
+        dispatch(getError(error?.response?.data?.message || error.message));
     }
 }

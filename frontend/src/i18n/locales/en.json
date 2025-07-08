@@ -83,5 +83,15 @@
   },
   "adminDashboard": {
     "title": "Admin Dashboard"
+  },
+  "subjectType": {
+    "theory": "Theory",
+    "practice": "Practice",
+    "integrated": "Integrated"
+  },
+  "semester": {
+    "semester1": "Semester 1",
+    "semester2": "Semester 2",
+    "summer": "Summer Semester"
   }
 }

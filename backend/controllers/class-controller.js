@@ -5,29 +5,28 @@ const Teacher = require('../models/teacherSchema.js');
 
 const sclassCreate = async (req, res) => {
     try {
-        const { sclassName, adminID } = req.body;
+        const { sclassName, school } = req.body;
 
-        if (!sclassName || !adminID) {
-            return res.status(400).json({ message: 'Please provide class name and admin ID.' });
+        if (!sclassName || !school) {
+            return res.status(400).json({ message: 'Please provide class name and school ID.' });
         }
 
-        const existingSclass = await Sclass.findOne({ sclassName, school: adminID });
+        const existingSclass = await Sclass.findOne({ sclassName, school });
 
         if (existingSclass) {
             return res.status(409).json({ message: 'Class name already exists in this school.' });
         }
 
-        const newClass = new Sclass({
-            ...req.body,
-            school: adminID
-        });
+        const newClass = new Sclass(req.body);
 
         const result = await newClass.save();
         res.status(201).json(result);
 
     } catch (err) {
         if (err.name === 'ValidationError') {
-            return res.status(400).json({ message: err.message });
+            // Extract and send a more specific error message
+            const messages = Object.values(err.errors).map(val => val.message);
+            return res.status(400).json({ message: messages.join(', ') });
         }
         console.error(err);
         res.status(500).json({ message: 'Internal Server Error' });

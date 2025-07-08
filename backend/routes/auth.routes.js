@@ -7,7 +7,7 @@ const { adminRegister,
 } = require('../controllers/admin-controller');
 
 // Admin Auth
-router.post('/AdminReg', adminRegister);
+router.post('/AdminCreate', adminRegister);
 router.post('/AdminLogin', adminLogIn);
 router.get('/Admin/:id', getAdminDetail);
 

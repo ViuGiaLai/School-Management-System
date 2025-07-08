@@ -2,32 +2,35 @@ const Sclass = require('../models/sclassSchema.js');
 const Student = require('../models/studentSchema.js');
 const Subject = require('../models/subjectSchema.js');
 const Teacher = require('../models/teacherSchema.js');
-
 const sclassCreate = async (req, res) => {
     try {
-        const { sclassName, school } = req.body;
+        const { sclassName, classCode, school } = req.body;
 
-        if (!sclassName || !school) {
-            return res.status(400).json({ message: 'Please provide class name and school ID.' });
+        if (!sclassName || !classCode || !school) {
+            return res.status(400).json({ message: 'Missing required fields: class name, class code, or school ID.' });
         }
 
-        const existingSclass = await Sclass.findOne({ sclassName, school });
-
-        if (existingSclass) {
+        const existingName = await Sclass.findOne({ sclassName, school });
+        if (existingName) {
             return res.status(409).json({ message: 'Class name already exists in this school.' });
         }
 
-        const newClass = new Sclass(req.body);
+        const existingCode = await Sclass.findOne({ classCode });
+        if (existingCode) {
+            return res.status(409).json({ message: 'Class code already exists. Please choose another one.' });
+        }
 
+        const newClass = new Sclass(req.body);
         const result = await newClass.save();
+
         res.status(201).json(result);
 
     } catch (err) {
         if (err.name === 'ValidationError') {
-            // Extract and send a more specific error message
             const messages = Object.values(err.errors).map(val => val.message);
             return res.status(400).json({ message: messages.join(', ') });
         }
+
         console.error(err);
         res.status(500).json({ message: 'Internal Server Error' });
     }

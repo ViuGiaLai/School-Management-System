@@ -12,7 +12,8 @@ app.use(express.json({ limit: "10mb" }));
 
 const allowedOrigins = [
   process.env.FRONTEND_URL,       
-  "http://localhost:3000"        
+  "http://localhost:3000",
+  "https://school-management-system-blue-zeta.vercel.app"      
 ];
 
 const corsOptions = {

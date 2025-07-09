@@ -23,13 +23,17 @@ const studentRegister = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        const student = new Student({
-            ...req.body,
+        const newStudent = new Student({
+            name,
+            email,
+            rollNum,
             password: hashedPassword,
+            sclassName,
             school: adminID,
+            role: 'Student',
         });
 
-        const result = await student.save();
+        const result = await newStudent.save();
 
         const response = result.toObject();
         delete response.password;
@@ -42,8 +46,8 @@ const studentRegister = async (req, res) => {
             return res.status(400).json({ message: err.message });
         }
         // Handle other potential errors
-        console.error(err);
-        res.status(500).json({ message: 'Internal Server Error' });
+        console.error('Error in studentRegister:', err);
+        res.status(500).json({ message: 'Internal Server Error', error: err.message });
     }
 };
 

@@ -51,15 +51,15 @@ const teacherLogIn = async (req, res) => {
 const getTeachers = async (req, res) => {
     try {
         let teachers = await Teacher.find({ school: req.params.id })
-            .populate("teachSubject", "subName")
-            .populate("teachSclass", "sclassName");
+            .populate("teachSubjects", "subName")
+            .populate("teachSclasses", "sclassName");
         if (teachers.length > 0) {
             let modifiedTeachers = teachers.map((teacher) => {
                 return { ...teacher._doc, password: undefined };
             });
             res.send(modifiedTeachers);
         } else {
-            res.send({ message: "No teachers found" });
+            res.send([]);
         }
     } catch (err) {
         res.status(500).json(err);

@@ -32,9 +32,15 @@ const teacherLogIn = async (req, res) => {
         if (teacher) {
             const validated = await bcrypt.compare(req.body.password, teacher.password);
             if (validated) {
-                teacher = await teacher.populate("teachSubject", "subName sessions")
-                teacher = await teacher.populate("school", "schoolName")
-                teacher = await teacher.populate("teachSclass", "sclassName")
+                if (teacher.teachSubject) {
+                    await teacher.populate("teachSubject", "subName sessions");
+                }
+                if (teacher.school) {
+                    await teacher.populate("school", "schoolName");
+                }
+                if (teacher.teachSclass) {
+                    await teacher.populate("teachSclass", "sclassName");
+                }
                 teacher.password = undefined;
                 res.send(teacher);
             } else {
@@ -51,8 +57,8 @@ const teacherLogIn = async (req, res) => {
 const getTeachers = async (req, res) => {
     try {
         let teachers = await Teacher.find({ school: req.params.id })
-            .populate("teachSubjects", "subName")
-            .populate("teachSclasses", "sclassName");
+            .populate("teachSubject", "subName sessions")
+            .populate("teachSclass", "sclassName");
         if (teachers.length > 0) {
             let modifiedTeachers = teachers.map((teacher) => {
                 return { ...teacher._doc, password: undefined };

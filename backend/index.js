@@ -1,48 +1,47 @@
-const express = require("express")
-const cors = require("cors")
-const mongoose = require("mongoose")
-const dotenv = require("dotenv")
-// const bodyParser = require("body-parser")
-const app = express()
-const Routes = require("./routes/route.js")
-
-const PORT = process.env.PORT || 5000
+const express = require("express");
+const cors = require("cors");
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
+const Routes = require("./routes/route.js");
 
 dotenv.config();
+const app = express();
+const PORT = process.env.PORT || 5000;
 
-// app.use(bodyParser.json({ limit: '10mb', extended: true }))
-// app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }))
-
-app.use(express.json({ limit: '10mb' }))
+app.use(express.json({ limit: "10mb" }));
 
 const allowedOrigins = [
-  process.env.FRONTEND_URL,
-  'http://localhost:3000'
+  process.env.FRONTEND_URL,       
+  "http://localhost:3000"        
 ];
 
-app.use(cors({
-  origin: function(origin, callback) {
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) !== -1) {
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true)
+    if (allowedOrigins.includes(origin)) {
       return callback(null, true);
     } else {
-      return callback(new Error('Not allowed by CORS'));
+      return callback(new Error("Not allowed by CORS: " + origin));
     }
   },
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true
-}));
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+};
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions)); 
 
 mongoose
-    .connect(process.env.MONGO_URL, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    })
-    .then(console.log("Connected to MongoDB"))
-    .catch((err) => console.log("NOT CONNECTED TO NETWORK", err))
+  .connect(process.env.MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  })
+  .then(() => console.log("✅ Connected to MongoDB"))
+  .catch((err) => console.log("❌ Failed to connect MongoDB:", err));
 
-app.use('/', Routes);
+app.use("/", Routes);
 
 app.listen(PORT, () => {
-    console.log(`Server started at port no. ${PORT}`)
-})
+  console.log(`🚀 Server running at port ${PORT}`);
+});

@@ -36,7 +36,7 @@ const sclassSlice = createSlice({
             state.getresponse = null;
         },
         getSubjectsSuccess: (state, action) => {
-            state.subjectsList = action.payload;
+            state.subjectsList = Array.isArray(action.payload) ? action.payload : [];
             state.loading = false;
             state.error = null;
             state.response = null;

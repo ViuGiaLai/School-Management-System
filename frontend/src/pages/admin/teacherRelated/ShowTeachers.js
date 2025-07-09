@@ -124,6 +124,7 @@ const ShowTeachers = () => {
                                                             value
                                                         ) : (
                                                             <Button variant="contained"
+                                                                disabled={!row.teachSclassID}
                                                                 onClick={() => {
                                                                     navigate(`/Admin/teachers/choosesubject/${row.teachSclassID}/${row.id}`)
                                                                 }}>

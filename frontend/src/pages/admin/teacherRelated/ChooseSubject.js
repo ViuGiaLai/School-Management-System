@@ -19,18 +19,20 @@ const ChooseSubject = ({ situation }) => {
     const { subjectsList, loading, error, response } = useSelector((state) => state.sclass);
 
     useEffect(() => {
-        if (situation === "Norm") {
-            setClassID(params.id);
-            const classID = params.id
-            dispatch(getTeacherFreeClassSubjects(classID));
+        // Route has been standardized to use params.id for the class ID.
+        const classId = params.id;
+
+        // This strict check prevents API calls with 'undefined' or invalid values
+        // during the initial render cycles before react-router populates params.
+        if (classId && classId !== 'undefined') {
+            setClassID(classId);
+            dispatch(getTeacherFreeClassSubjects(classId));
+
+            if (params.teacherID) {
+                setTeacherID(params.teacherID);
+            }
         }
-        else if (situation === "Teacher") {
-            const { classID, teacherID } = params
-            setClassID(classID);
-            setTeacherID(teacherID);
-            dispatch(getTeacherFreeClassSubjects(classID));
-        }
-    }, [situation]);
+    }, [dispatch, params.id, params.teacherID]);
 
     if (loading) {
         return <div>Loading...</div>;
@@ -48,11 +50,18 @@ const ChooseSubject = ({ situation }) => {
         console.log(error)
     }
 
-    const updateSubjectHandler = (teacherId, teachSubject) => {
-        setLoader(true)
-        dispatch(updateTeachSubject(teacherId, teachSubject))
-        navigate("/Admin/teachers")
-    }
+    const updateSubjectHandler = (teachSubject) => {
+        const teacherId = params.teacherID;
+
+        if (teacherId) {
+            setLoader(true);
+            dispatch(updateTeachSubject(teacherId, teachSubject));
+            navigate("/Admin/teachers");
+        } else {
+            console.error("Teacher ID is missing from URL params.");
+            // Optionally, show an error message to the user
+        }
+    };
 
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden' }}>
@@ -85,13 +94,9 @@ const ChooseSubject = ({ situation }) => {
                                                 Choose
                                             </GreenButton>
                                             :
-                                            <GreenButton variant="contained" disabled={loader}
-                                                onClick={() => updateSubjectHandler(teacherID, subject._id)}>
-                                                {loader ? (
-                                                    <div className="load"></div>
-                                                ) : (
-                                                    'Choose Sub'
-                                                )}
+                                            <GreenButton variant="contained"
+                                                onClick={() => updateSubjectHandler({ subName: subject.subName, sessions: subject.sessions })}>
+                                                Choose
                                             </GreenButton>}
                                     </StyledTableCell>
                                 </StyledTableRow>

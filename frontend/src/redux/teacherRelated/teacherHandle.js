@@ -37,10 +37,19 @@ export const getTeacherDetails = (id) => async (dispatch) => {
 }
 
 export const updateTeachSubject = (teacherId, teachSubject) => async (dispatch) => {
+    if (!teacherId) {
+        dispatch(getError("Teacher ID is missing"));
+        return;
+    }
+
     dispatch(getRequest());
 
     try {
-        await axios.put(`${process.env.REACT_APP_BASE_URL}/api/teachers/Teacher/${teacherId}`, teachSubject, { headers: { 'Content-Type': 'application/json' } });
+        await axios.put(
+            `${process.env.REACT_APP_BASE_URL}/api/teachers/Teacher/${teacherId}`,
+            teachSubject,
+            { headers: { 'Content-Type': 'application/json' } }
+        );
         dispatch(postDone());
     } catch (error) {
         dispatch(getError(error?.response?.data?.message || error.message));

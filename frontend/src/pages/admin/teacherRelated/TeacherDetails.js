@@ -51,7 +51,7 @@ const TeacherDetails = () => {
                             </Typography>
                         </>
                     ) : (
-                        <Button variant="contained" onClick={handleAddSubject}>
+                        <Button variant="contained" onClick={handleAddSubject} disabled={!teacherDetails?.teachSclass?._id}>
                             Add Subject
                         </Button>
                     )}

@@ -73,17 +73,23 @@ export const getSubjectList = (id, address) => async (dispatch) => {
 export const getTeacherFreeClassSubjects = (id) => async (dispatch) => {
     dispatch(getRequest());
 
+    // Strict check to prevent API call with invalid ID
+    if (!id || id === 'undefined') {
+        dispatch(getError({ message: `Invalid class ID received: ${id}` }));
+        return;
+    }
+
     try {
         const result = await axios.get(`${process.env.REACT_APP_BASE_URL}/api/subjects/FreeSubjectList/${id}`);
         if (result.data.message) {
-            dispatch(getFailed(result.data.message));
+            dispatch(getSubjectsSuccess(result.data.message));
         } else {
             dispatch(getSubjectsSuccess(result.data));
         }
     } catch (error) {
         dispatch(getError(error?.response?.data?.message || error.message));
     }
-}
+};
 
 export const getSubjectDetails = (id, address) => async (dispatch) => {
     dispatch(getSubDetailsRequest());

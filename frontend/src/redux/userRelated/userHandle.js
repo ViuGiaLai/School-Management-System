@@ -46,8 +46,10 @@ export const registerUser = (fields, role) => async (dispatch) => {
         if (role === 'Student') module = 'students';
         else if (role === 'Teacher') module = 'teachers';
 
+        const endpoint = role === 'Student' ? 'StudentCreate' : `${role}Reg`;
+
         const result = await axios.post(
-            `${process.env.REACT_APP_BASE_URL}/api/${module}/${role}Reg`,
+            `${process.env.REACT_APP_BASE_URL}/api/${module}/${endpoint}`,
             fields,
             { headers: { 'Content-Type': 'application/json' } }
         );

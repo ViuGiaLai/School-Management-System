@@ -7,13 +7,11 @@ const studentSchema = new mongoose.Schema({
     },
     rollNum: {
         type: Number,
-        required: true,
-        unique: true
+        required: true
     },
     email: {
         type: String,
-        required: true,
-        unique: true
+        required: true
     },
     phoneNumber: {
         type: String,

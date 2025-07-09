@@ -4,7 +4,7 @@ import "./ForgotPasswordPage.scss";
 import logo from "../../assets/logo_School Management system.avif";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "../../components/LanguageSwitcher";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 
 function ForgotPasswordPage() {
   const [email, setEmail] = useState("");

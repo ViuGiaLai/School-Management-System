@@ -64,6 +64,7 @@ const AddStudent = ({ situation }) => {
       ...values,
       sclassName: values.sclassName,
       adminID,
+      school: adminID, // Thêm trường school
       role,
       attendance: [],
     };
@@ -102,7 +103,7 @@ const AddStudent = ({ situation }) => {
               </Form.Item>
 
               <Form.Item label="Password" name="password" rules={[{ required: true }]}>
-                <Input.Password placeholder="Enter Password" style={{ height: 48 }} />
+                <Input.Password placeholder="Enter Password" style={{ height: 48 }} autoComplete="new-password" />
               </Form.Item>
 
               <Form.Item label="Email" name="email" rules={[{ required: true, type: 'email' }]}>

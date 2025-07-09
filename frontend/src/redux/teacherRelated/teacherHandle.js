@@ -13,10 +13,10 @@ export const getAllTeachers = (id) => async (dispatch) => {
 
     try {
         const result = await axios.get(`${process.env.REACT_APP_BASE_URL}/api/teachers/Teachers/${id}`);
-        if (result.data.message) {
-            dispatch(getFailed(result.data.message));
-        } else {
+        if (Array.isArray(result.data)) {
             dispatch(getSuccess(result.data));
+        } else {
+            dispatch(getSuccess([]));
         }
     } catch (error) {
         dispatch(getError(error?.response?.data?.message || error.message));

@@ -28,6 +28,7 @@ export const loginUser = (fields, role) => async (dispatch) => {
             { headers: { 'Content-Type': 'application/json' } }
         );
         if (result.data.role) {
+            localStorage.setItem('user', JSON.stringify(result.data));
             dispatch(authSuccess(result.data));
         } else {
             dispatch(authFailed(result.data.message));
@@ -46,21 +47,17 @@ export const registerUser = (fields, role) => async (dispatch) => {
         else if (role === 'Teacher') module = 'teachers';
 
         const result = await axios.post(
-            `${process.env.REACT_APP_BASE_URL}/api/${module}/${role}Create`,
+            `${process.env.REACT_APP_BASE_URL}/api/${module}/${role}Reg`,
             fields,
             { headers: { 'Content-Type': 'application/json' } }
         );
         console.log("Register API result:", result.data); // Thêm log để kiểm tra dữ liệu trả về
 
         // Kiểm tra trường hợp thành công dựa trên dữ liệu thực tế trả về
-        if (result.data && (result.data.role || result.data.schoolName || result.data._id || result.data.success)) {
-            dispatch(authSuccess(result.data));
-        }
-        else if (result.data && result.data.school) {
-            dispatch(stuffAdded());
-        }
-        else {
-            dispatch(authFailed(result.data?.message || "Registration failed"));
+        if (result.data.school) {
+            dispatch(stuffAdded(result.data));
+        } else {
+            dispatch(authFailed(result.data.message || "Registration failed"));
         }
     } catch (error) {
         dispatch(authError(error?.response?.data?.message || error.message));

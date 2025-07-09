@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { getAllTeachers } from '../../../redux/teacherRelated/teacherHandle';
 import {
     Paper, Table, TableBody, TableContainer,
-    TableHead, TablePagination, Button, Box, IconButton,
+    TableHead, TablePagination, Button, Box, IconButton, Typography,
 } from '@mui/material';
 import { deleteUser } from '../../../redux/userRelated/userHandle';
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
@@ -30,20 +30,6 @@ const ShowTeachers = () => {
     const [showPopup, setShowPopup] = useState(false);
     const [message, setMessage] = useState("");
 
-    if (loading) {
-        return <div>Loading...</div>;
-    } else if (response) {
-        return (
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: '16px' }}>
-                <GreenButton variant="contained" onClick={() => navigate("/Admin/teachers/chooseclass")}>
-                    Add Teacher
-                </GreenButton>
-            </Box>
-        );
-    } else if (error) {
-        console.log(error);
-    }
-
     const deleteHandler = (deleteID, address) => {
         console.log(deleteID);
         console.log(address);
@@ -65,11 +51,31 @@ const ShowTeachers = () => {
         return {
             name: teacher.name,
             teachSubject: teacher.teachSubject?.subName || null,
-            teachSclass: teacher.teachSclass.sclassName,
-            teachSclassID: teacher.teachSclass._id,
+            teachSclass: teacher.teachSclass?.sclassName || 'N/A',
+            teachSclassID: teacher.teachSclass?._id,
             id: teacher._id,
         };
     });
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error) {
+        console.log(error);
+        return <div>Error loading data. Please try again.</div>;
+    }
+
+    if (teachersList.length === 0) {
+        return (
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', flexDirection: 'column' }}>
+                <Typography variant="h6">No teachers found</Typography>
+                <GreenButton variant="contained" onClick={() => navigate("/Admin/teachers/chooseclass")} sx={{ mt: 2 }}>
+                    Add Teacher
+                </GreenButton>
+            </Box>
+        );
+    }
 
     const actions = [
         {

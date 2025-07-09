@@ -178,6 +178,7 @@ export const addStuff = (fields, address) => async (dispatch) => {
     else if (address === 'Teacher') module = 'teachers';
     else if (address === 'Sclass' || address === 'Sclasses') module = 'classes';
     else if (address === 'Subject' || address === 'Subjects') module = 'subjects';
+    else if (address === 'Notice') module = 'notices';
 
     try {
         const result = await axios.post(

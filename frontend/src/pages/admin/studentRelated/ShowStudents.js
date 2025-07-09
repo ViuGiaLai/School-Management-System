@@ -11,6 +11,7 @@ import { BlackButton, BlueButton, GreenButton } from '../../../components/button
 import TableTemplate from '../../../components/TableTemplate';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import SpeedDialTemplate from '../../../components/SpeedDialTemplate';
+import Loader from '../../../components/Loader';
 
 import * as React from 'react';
 import Button from '@mui/material/Button';
@@ -187,7 +188,7 @@ const ShowStudents = () => {
     return (
         <>
             {loading ?
-                <div>Loading...</div>
+                <Loader />
                 :
                 <>
                     {response ?

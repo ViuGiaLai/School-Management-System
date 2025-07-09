@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Grid, Box, Typography, Paper, Checkbox, FormControlLabel, TextField, CssBaseline, IconButton, InputAdornment, CircularProgress, Backdrop } from '@mui/material';
+import { Button, Grid, Box, Typography, Paper, Checkbox, FormControlLabel, TextField, CssBaseline, IconButton, InputAdornment } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import bgpic from "../assets/designlogin.jpg"
@@ -12,6 +12,7 @@ import Popup from '../components/Popup';
 import { Helmet } from 'react-helmet-async';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from '../components/LanguageSwitcher';
+import Loader from '../components/Loader';
 
 const defaultTheme = createTheme();
 
@@ -21,7 +22,7 @@ const LoginPage = ({ role }) => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
-    const { status, currentUser, response, error, currentRole } = useSelector(state => state.user);;
+    const { status, currentUser, response, error, currentRole } = useSelector(state => state.user);
 
     const [toggle, setToggle] = useState(false)
     const [guestLoader, setGuestLoader] = useState(false)
@@ -141,6 +142,10 @@ const LoginPage = ({ role }) => {
         titleKey = 'studentLogin.title';
     }
 
+    if (loader || guestLoader) {
+        return <Loader />;
+    }
+
     return (
         <ThemeProvider theme={defaultTheme}>
             <Helmet>
@@ -252,9 +257,7 @@ const LoginPage = ({ role }) => {
                                 variant="contained"
                                 sx={{ mt: 3 }}
                             >
-                                {loader ?
-                                    <CircularProgress size={24} color="inherit" />
-                                    : t(loginBtnKey)}
+                                {t(loginBtnKey)}
                             </LightPurpleButton>
                             <Button
                                 fullWidth
@@ -294,13 +297,6 @@ const LoginPage = ({ role }) => {
                     }}
                 />
             </Grid>
-            <Backdrop
-                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-                open={guestLoader}
-            >
-                <CircularProgress color="primary" />
-                Please Wait
-            </Backdrop>
             <Popup message={message} setShowPopup={setShowPopup} showPopup={showPopup} />
         </ThemeProvider>
     );

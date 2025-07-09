@@ -11,6 +11,7 @@ import { deleteUser } from '../../../redux/userRelated/userHandle';
 import TableTemplate from '../../../components/TableTemplate';
 import { GreenButton } from '../../../components/buttonStyles';
 import SpeedDialTemplate from '../../../components/SpeedDialTemplate';
+import Loader from '../../../components/Loader';
 
 const ShowNotices = () => {
 
@@ -75,7 +76,7 @@ const ShowNotices = () => {
     return (
         <>
             {loading ?
-                <div>Loading...</div>
+                <Loader />
                 :
                 <>
                     {response ?

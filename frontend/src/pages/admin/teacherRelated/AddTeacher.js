@@ -5,7 +5,8 @@ import { getSubjectDetails } from '../../../redux/sclassRelated/sclassHandle';
 import Popup from '../../../components/Popup';
 import { registerUser } from '../../../redux/userRelated/userHandle';
 import { underControl } from '../../../redux/userRelated/userSlice';
-import { Row, Col, Form, Input, Button, Select, DatePicker, Typography, message, Spin } from 'antd';
+import { Row, Col, Form, Input, Button, Select, DatePicker, Typography, message } from 'antd';
+import Loader from '../../../components/Loader';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -62,6 +63,10 @@ const AddTeacher = () => {
     dispatch(registerUser(fields, role));
   };
 
+  if (loader) {
+    return <Loader />;
+  }
+
   return (
     <>
       <div style={{ maxWidth: 1000, margin: '0 auto', padding: 24, background: '#fff', borderRadius: 8 }}>
@@ -116,8 +121,8 @@ const AddTeacher = () => {
           </Row>
 
           <Form.Item style={{ textAlign: 'center' }}>
-            <Button type="primary" htmlType="submit" size="large" disabled={loader}>
-              {loader ? <Spin /> : 'Add Teacher'}
+            <Button type="primary" htmlType="submit" size="large">
+              Add Teacher
             </Button>
           </Form.Item>
         </Form>

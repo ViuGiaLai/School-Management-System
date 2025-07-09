@@ -5,7 +5,6 @@ import {
   Button,
   Popconfirm,
   Typography,
-  Spin,
   message,
 } from 'antd';
 import { DeleteOutlined, PlusOutlined, EyeOutlined } from '@ant-design/icons';
@@ -13,6 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { getSubjectList } from '../../../redux/sclassRelated/sclassHandle';
 import { deleteUser } from '../../../redux/userRelated/userHandle';
+import Loader from '../../../components/Loader';
 
 const { Title } = Typography;
 
@@ -117,7 +117,7 @@ const ShowSubjects = () => {
       </Space>
 
       {loading ? (
-        <Spin size="large" />
+        <Loader />
       ) : (
         <Table columns={columns} dataSource={data} bordered />
       )}

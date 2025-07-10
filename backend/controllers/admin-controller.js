@@ -80,7 +80,14 @@ const adminRegister = async (req, res) => {
 
         const result = await admin.save();
         result.password = undefined;
-        res.send(result);
+        // Trả về school dạng object
+        res.send({
+            ...result._doc,
+            school: {
+                _id: result._id,
+                schoolName: result.schoolName
+            }
+        });
     } catch (err) {
         res.status(500).json(err);
     }

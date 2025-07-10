@@ -92,13 +92,13 @@ const getTeachers = async (req, res) => {
 
 const getTeacherDetail = async (req, res) => {
     try {
-        // Validate ObjectId
         if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
             return res.status(400).json({ message: "Invalid teacher ID" });
         }
+        // Bỏ populate school nếu không thực sự cần, để tránh lỗi populate ref không đúng
         let teacher = await Teacher.findById(req.params.id)
             .populate({ path: "teachSubject", select: "subName sessions" })
-            .populate({ path: "school", select: "_id schoolName" })
+            // .populate({ path: "school", select: "_id schoolName" }) // Bỏ dòng này nếu không cần
             .populate({ path: "teachSclass", select: "sclassName" });
         if (!teacher) {
             return res.status(404).json({ message: "No teacher found" });
@@ -107,7 +107,6 @@ const getTeacherDetail = async (req, res) => {
         res.send(teacher);
     } catch (err) {
         console.error("Error in getTeacherDetail:", err);
-        // Trả về lỗi chi tiết để debug
         res.status(500).json({ message: "Internal server error", error: err.message });
     }
 };

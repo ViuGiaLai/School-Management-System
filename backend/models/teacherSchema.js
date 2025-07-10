@@ -47,7 +47,8 @@ const teacherSchema = new mongoose.Schema({
     },
     school: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Admin', // Đảm bảo ref đúng với model admin nếu bạn dùng Admin làm school
+        // Đổi ref về 'admin' (chữ thường) nếu bạn đăng ký model admin như bên dưới
+        ref: 'admin',
         required: true
     },
     teachSubject: {
@@ -75,5 +76,12 @@ const teacherSchema = new mongoose.Schema({
         absentCount: Number
     }]
 }, { timestamps: true });
+
+// Đảm bảo đăng ký model admin đúng tên (chữ thường)
+try {
+    mongoose.model("admin");
+} catch (e) {
+    require("./adminSchema.js");
+}
 
 module.exports = mongoose.model("teacher", teacherSchema);

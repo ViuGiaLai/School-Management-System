@@ -70,35 +70,25 @@ const teacherLogIn = async (req, res) => {
         res.status(500).json(err);
     }
 };
-
 const getTeachers = async (req, res) => {
+    const schoolId = req.params.id;
+
     try {
-        // Validate that req.params.id is a valid ObjectId (24 hex chars)
-        if (!req.params.id || !/^[a-fA-F0-9]{24}$/.test(req.params.id)) {
-            return res.status(400).json({ message: "Invalid school ID" });
+        if (!mongoose.Types.ObjectId.isValid(schoolId)) {
+            return res.status(400).json({ message: 'Invalid school ID' });
         }
 
-        // Ensure all Teacher documents have a valid ObjectId in the 'school' field
-        let teachers = await Teacher.find({ school: req.params.id })
-            .populate("teachSubject", "subName sessions")
-            .populate("teachSclass", "sclassName");
+        const teachers = await Teacher.find({ school: schoolId })
+            .populate('teachSubjects', 'subName')  
+            .populate('teachSclasses', 'sclassName');
 
-        // Defensive: If teachers is null, set to []
-        if (!teachers) teachers = [];
-
-        // Remove password field from each teacher
-        let modifiedTeachers = teachers.map((teacher) => {
-            const t = { ...teacher._doc };
-            delete t.password;
-            return t;
-        });
-
-        res.send(modifiedTeachers);
+        res.status(200).json(teachers);
     } catch (err) {
-        console.error("Error in getTeachers:", err);
-        res.status(500).json({ message: "Internal Server Error", error: err.message });
+        console.error("Lỗi khi lấy danh sách giáo viên:", err.message);
+        res.status(500).json({ message: "Lỗi server", error: err.message });
     }
 };
+
 
 const getTeacherDetail = async (req, res) => {
     const { id } = req.params;

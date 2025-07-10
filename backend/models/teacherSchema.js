@@ -51,11 +51,11 @@ const teacherSchema = new mongoose.Schema({
     },
     teachSubjects: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'subject',
+        ref: 'Subject',
     }],
     teachSclasses: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'sclass',
+        ref: 'Sclass',
     }],
     attendance: [{
         date: {
@@ -64,18 +64,14 @@ const teacherSchema = new mongoose.Schema({
         },
         subject: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'subject'
+            ref: 'Subject'
         },
         sclass: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'sclass'
+            ref: 'Sclass'
         },
-        presentCount: {
-            type: Number
-        },
-        absentCount: {
-            type: Number
-        }
+        presentCount: Number,
+        absentCount: Number
     }]
 }, { timestamps: true });
 

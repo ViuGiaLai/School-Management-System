@@ -40,7 +40,7 @@ const teacherLogIn = async (req, res) => {
                     await teacher.populate("teachSubject", "subName sessions");
                 }
                 if (teacher.school) {
-                    await teacher.populate("school", "schoolName");
+                    await teacher.populate("school", "_id schoolName");
                 }
                 if (teacher.teachSclass) {
                     await teacher.populate("teachSclass", "sclassName");

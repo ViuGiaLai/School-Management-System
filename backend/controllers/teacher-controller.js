@@ -73,20 +73,17 @@ const teacherLogIn = async (req, res) => {
 };
 const getTeachers = async (req, res) => {
     const schoolId = req.params.id;
-
     try {
         if (!mongoose.Types.ObjectId.isValid(schoolId)) {
-            return res.status(400).json({ message: 'Invalid school ID' });
+            return res.status(400).json({ message: "Invalid school ID" });
         }
-
         const teachers = await Teacher.find({ school: schoolId })
-            .populate('teachSubjects', 'subName')  
+            .populate('teachSubjects', 'subName')
             .populate('teachSclasses', 'sclassName');
-
         res.status(200).json(teachers);
-    } catch (err) {
-        console.error("Lỗi khi lấy danh sách giáo viên:", err.message);
-        res.status(500).json({ message: "Lỗi server", error: err.message });
+    } catch (error) {
+        console.error("Error fetching teachers by school:", error.message);
+        res.status(500).json({ message: "Internal server error", error: error.message });
     }
 };
 

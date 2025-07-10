@@ -60,39 +60,59 @@ const teacherLogIn = async (req, res) => {
 
 const getTeachers = async (req, res) => {
     try {
+        // Validate that req.params.id is a valid ObjectId (24 hex chars)
+        if (!req.params.id || !/^[a-fA-F0-9]{24}$/.test(req.params.id)) {
+            return res.status(400).json({ message: "Invalid school ID" });
+        }
+
+        // Ensure all Teacher documents have a valid ObjectId in the 'school' field
         let teachers = await Teacher.find({ school: req.params.id })
             .populate("teachSubject", "subName sessions")
             .populate("teachSclass", "sclassName");
-        if (teachers.length > 0) {
-            let modifiedTeachers = teachers.map((teacher) => {
-                return { ...teacher._doc, password: undefined };
-            });
-            res.send(modifiedTeachers);
-        } else {
-            res.send([]);
-        }
+
+        // Defensive: If teachers is null, set to []
+        if (!teachers) teachers = [];
+
+        // Remove password field from each teacher
+        let modifiedTeachers = teachers.map((teacher) => {
+            const t = { ...teacher._doc };
+            delete t.password;
+            return t;
+        });
+
+        res.send(modifiedTeachers);
     } catch (err) {
-        res.status(500).json(err);
+        console.error("Error in getTeachers:", err);
+        res.status(500).json({ message: "Internal Server Error", error: err.message });
     }
 };
 
 const getTeacherDetail = async (req, res) => {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ message: "Invalid teacher ID" });
+    }
+
     try {
-        let teacher = await Teacher.findById(req.params.id)
+        const teacher = await Teacher.findById(id)
             .populate("teachSubject", "subName sessions")
             .populate("school", "schoolName")
-            .populate("teachSclass", "sclassName")
-        if (teacher) {
-            teacher.password = undefined;
-            res.send(teacher);
+            .populate("teachSclass", "sclassName");
+
+        if (!teacher) {
+            return res.status(404).json({ message: "Teacher not found" });
         }
-        else {
-            res.send({ message: "No teacher found" });
-        }
+
+        const teacherObject = teacher.toObject();
+        delete teacherObject.password;
+
+        return res.status(200).json(teacherObject);
     } catch (err) {
-        res.status(500).json(err);
+        console.error("getTeacherDetail error:", err);
+        return res.status(500).json({ message: "Internal server error", error: err.message });
     }
-}
+};
 
 const updateTeacherSubject = async (req, res) => {
     const { teacherId, teachSubject } = req.body;

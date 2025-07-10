@@ -96,18 +96,17 @@ const getTeacherDetail = async (req, res) => {
             return res.status(400).json({ message: "Invalid teacher ID" });
         }
         let teacher = await Teacher.findById(req.params.id)
-            .populate("teachSubject", "subName sessions")
-            .populate("school", "_id schoolName")
-            .populate("teachSclass", "sclassName");
-        if (teacher) {
-            teacher.password = undefined;
-            res.send(teacher);
+            .populate({ path: "teachSubject", select: "subName sessions" })
+            .populate({ path: "school", select: "_id schoolName" })
+            .populate({ path: "teachSclass", select: "sclassName" });
+        if (!teacher) {
+            return res.status(404).json({ message: "No teacher found" });
         }
-        else {
-            res.send({ message: "No teacher found" });
-        }
+        teacher.password = undefined;
+        res.send(teacher);
     } catch (err) {
         console.error("Error in getTeacherDetail:", err);
+        // Trả về lỗi chi tiết để debug
         res.status(500).json({ message: "Internal server error", error: err.message });
     }
 };

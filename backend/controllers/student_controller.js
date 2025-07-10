@@ -4,7 +4,7 @@ const Subject = require('../models/subjectSchema.js');
 
 const studentRegister = async (req, res) => {
     try {
-        const { name, rollNum, email, password, sclassName, adminID } = req.body;
+        const { name, rollNum, email, password, sclassName, adminID, gender, dob, address, phoneNumber } = req.body;
 
         // Basic validation for required fields
         if (!name || !rollNum || !email || !password || !sclassName || !adminID) {
@@ -23,6 +23,7 @@ const studentRegister = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
+        // Tạo student mới và lưu vào database
         const newStudent = new Student({
             name,
             email,
@@ -31,9 +32,13 @@ const studentRegister = async (req, res) => {
             sclassName,
             school: adminID,
             role: 'Student',
+            gender,
+            dob,
+            address,
+            phoneNumber
         });
 
-        const result = await newStudent.save();
+        const result = await newStudent.save(); // <--- Lưu vào database
 
         const response = result.toObject();
         delete response.password;

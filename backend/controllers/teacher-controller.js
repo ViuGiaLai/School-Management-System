@@ -5,7 +5,7 @@ const Subject = require('../models/subjectSchema.js');
 const Admin = require('../models/adminSchema.js'); // Thêm dòng này để đăng ký schema Admin
 
 const teacherRegister = async (req, res) => {
-    let { name, email, password, role, school, teachSubject, teachSclass } = req.body;
+    let { name, email, password, role, school, teachSubject, teachSclass, phoneNumber, gender, dob, address } = req.body;
 
     try {
         if (school && typeof school === 'object' && school._id) {
@@ -26,7 +26,11 @@ const teacherRegister = async (req, res) => {
             role,
             school: school,
             teachSubject,
-            teachSclass
+            teachSclass,
+            phoneNumber,
+            gender,
+            dob,
+            address
         });
 
         const existingTeacherByEmail = await Teacher.findOne({ email });

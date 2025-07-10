@@ -47,17 +47,16 @@ const teacherSchema = new mongoose.Schema({
     },
     school: {
         type: mongoose.Schema.Types.ObjectId,
-        // Đổi ref về 'admin' (chữ thường) nếu bạn đăng ký model admin như bên dưới
-        ref: 'admin',
+        ref: 'admin', // Đảm bảo ref đúng với tên model đã đăng ký
         required: true
     },
     teachSubject: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Subject'
+        ref: 'subject' // Đúng với tên model đã đăng ký
     },
     teachSclass: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Sclass'
+        ref: 'sclass' // Đúng với tên model đã đăng ký
     },
     attendance: [{
         date: {
@@ -66,11 +65,11 @@ const teacherSchema = new mongoose.Schema({
         },
         subject: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Subject'
+            ref: 'subject'
         },
         sclass: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Sclass'
+            ref: 'sclass'
         },
         presentCount: Number,
         absentCount: Number
@@ -84,4 +83,5 @@ try {
     require("./adminSchema.js");
 }
 
+module.exports = mongoose.model("teacher", teacherSchema);
 module.exports = mongoose.model("teacher", teacherSchema);

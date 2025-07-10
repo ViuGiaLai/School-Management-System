@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const Teacher = require('../models/teacherSchema.js');
 const Subject = require('../models/subjectSchema.js');
+const Admin = require('../models/adminSchema.js'); // Thêm dòng này để đăng ký schema Admin
 
 const teacherRegister = async (req, res) => {
     let { name, email, password, role, school, teachSubject, teachSclass } = req.body;

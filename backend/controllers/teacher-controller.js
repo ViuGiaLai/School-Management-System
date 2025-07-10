@@ -90,29 +90,25 @@ const getTeachers = async (req, res) => {
 
 
 const getTeacherDetail = async (req, res) => {
-    const { id } = req.params;
-
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(400).json({ message: "Invalid teacher ID" });
-    }
-
     try {
-        const teacher = await Teacher.findById(id)
-            .populate("teachSubject", "subName sessions")
-            .populate("school", "schoolName")
-            .populate("teachSclass", "sclassName");
-
-        if (!teacher) {
-            return res.status(404).json({ message: "Teacher not found" });
+        // Validate ObjectId
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({ message: "Invalid teacher ID" });
         }
-
-        const teacherObject = teacher.toObject();
-        delete teacherObject.password;
-
-        return res.status(200).json(teacherObject);
+        let teacher = await Teacher.findById(req.params.id)
+            .populate("teachSubject", "subName sessions")
+            .populate("school", "_id schoolName")
+            .populate("teachSclass", "sclassName");
+        if (teacher) {
+            teacher.password = undefined;
+            res.send(teacher);
+        }
+        else {
+            res.send({ message: "No teacher found" });
+        }
     } catch (err) {
-        console.error("getTeacherDetail error:", err);
-        return res.status(500).json({ message: "Internal server error", error: err.message });
+        console.error("Error in getTeacherDetail:", err);
+        res.status(500).json({ message: "Internal server error", error: err.message });
     }
 };
 

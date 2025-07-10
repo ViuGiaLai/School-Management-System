@@ -47,7 +47,7 @@ const teacherSchema = new mongoose.Schema({
     },
     school: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Admin', // Đảm bảo ref đúng với model admin (nếu bạn dùng Admin làm school)
+        ref: 'Admin', // Đảm bảo ref đúng với model admin nếu bạn dùng Admin làm school
         required: true
     },
     teachSubject: {

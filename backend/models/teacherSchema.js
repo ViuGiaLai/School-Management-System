@@ -83,5 +83,5 @@ try {
     require("./adminSchema.js");
 }
 
-module.exports = mongoose.model("teacher", teacherSchema);
-module.exports = mongoose.model("teacher", teacherSchema);
+// Chỉ export 1 lần, tránh lỗi overwrite model
+module.exports = mongoose.models.teacher || mongoose.model("teacher", teacherSchema);

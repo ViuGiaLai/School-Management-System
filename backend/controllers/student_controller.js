@@ -4,7 +4,9 @@ const Subject = require('../models/subjectSchema.js');
 
 const studentRegister = async (req, res) => {
     try {
-        const { name, rollNum, email, password, sclassName, adminID, gender, dob, address, phoneNumber } = req.body;
+        // Trim name để tránh lỗi nhập thừa dấu cách
+        const name = req.body.name ? req.body.name.trim() : "";
+        const { rollNum, email, password, sclassName, adminID, gender, dob, address, phoneNumber } = req.body;
 
         // Basic validation for required fields
         if (!name || !rollNum || !email || !password || !sclassName || !adminID) {
@@ -23,7 +25,6 @@ const studentRegister = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        // Tạo student mới và lưu vào database
         const newStudent = new Student({
             name,
             email,
@@ -38,7 +39,7 @@ const studentRegister = async (req, res) => {
             phoneNumber
         });
 
-        const result = await newStudent.save(); // <--- Lưu vào database
+        const result = await newStudent.save();
 
         const response = result.toObject();
         delete response.password;
@@ -58,9 +59,29 @@ const studentRegister = async (req, res) => {
 
 const studentLogIn = async (req, res) => {
     try {
-        let student = await Student.findOne({ rollNum: req.body.rollNum, name: req.body.studentName });
+        const { rollNum, studentName, password, email, phoneNumber } = req.body;
+        let student = null;
+
+        // Ưu tiên đăng nhập bằng rollNum + name (nếu có)
+        if (rollNum && studentName) {
+            student = await Student.findOne({
+                rollNum: rollNum,
+                name: studentName.trim()
+            });
+        }
+
+        // Nếu không có rollNum+name hoặc không tìm thấy, thử bằng email
+        if ((!student || !student._id) && email) {
+            student = await Student.findOne({ email: email.trim() });
+        }
+
+        // Nếu không có email hoặc không tìm thấy, thử bằng phoneNumber
+        if ((!student || !student._id) && phoneNumber) {
+            student = await Student.findOne({ phoneNumber: phoneNumber.trim() });
+        }
+
         if (student) {
-            const validated = await bcrypt.compare(req.body.password, student.password);
+            const validated = await bcrypt.compare(password, student.password);
             if (validated) {
                 student = await student.populate("school", "schoolName")
                 student = await student.populate("sclassName", "sclassName")

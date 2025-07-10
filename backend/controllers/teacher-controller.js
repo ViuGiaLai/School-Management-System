@@ -77,9 +77,10 @@ const getTeachers = async (req, res) => {
         if (!mongoose.Types.ObjectId.isValid(schoolId)) {
             return res.status(400).json({ message: "Invalid school ID" });
         }
+        // Sửa lại populate cho đúng tên trường (teachSubject, teachSclass)
         const teachers = await Teacher.find({ school: schoolId })
-            .populate('teachSubjects', 'subName')
-            .populate('teachSclasses', 'sclassName');
+            .populate('teachSubject', 'subName sessions')
+            .populate('teachSclass', 'sclassName');
         res.status(200).json(teachers);
     } catch (error) {
         console.error("Error fetching teachers by school:", error.message);

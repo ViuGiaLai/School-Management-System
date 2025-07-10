@@ -47,16 +47,17 @@ const teacherSchema = new mongoose.Schema({
     },
     school: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'School',
+        ref: 'Admin', // Đảm bảo ref đúng với model admin (nếu bạn dùng Admin làm school)
+        required: true
     },
-    teachSubjects: [{
+    teachSubject: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Subject',
-    }],
-    teachSclasses: [{
+        ref: 'Subject'
+    },
+    teachSclass: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Sclass',
-    }],
+        ref: 'Sclass'
+    },
     attendance: [{
         date: {
             type: Date,

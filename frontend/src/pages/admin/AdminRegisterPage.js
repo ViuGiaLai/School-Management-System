@@ -30,6 +30,7 @@ const AdminRegisterPage = () => {
     const [loader, setLoader] = useState(false);
     const [showPopup, setShowPopup] = useState(false);
     const [message, setMessage] = useState("");
+    const [popupType, setPopupType] = useState('success');
 
     const [emailError, setEmailError] = useState(false);
     const [passwordError, setPasswordError] = useState(false);
@@ -68,13 +69,25 @@ const AdminRegisterPage = () => {
 
     useEffect(() => {
         if (status === 'success' || (currentUser && currentRole === 'Admin')) {
+            setLoader(false);
             navigate('/Admin/dashboard');
+        } else if (status === 'added') {
+            setMessage('Registration successful!');
+            setPopupType('success');
+            setShowPopup(true);
+            setLoader(false);
+            setTimeout(() => {
+                navigate('/Admin/dashboard');
+            }, 2000);
         } else if (status === 'failed') {
             setMessage(response);
+            setPopupType('error');
             setShowPopup(true);
             setLoader(false);
         } else if (status === 'error') {
             console.log(error);
+            setPopupType('error');
+            setLoader(false);
         }
     }, [status, currentUser, currentRole, navigate, error, response]);
 
@@ -206,7 +219,7 @@ const AdminRegisterPage = () => {
                     }}
                 />
             </Grid>
-            <Popup message={message} setShowPopup={setShowPopup} showPopup={showPopup} />
+            <Popup message={message} setShowPopup={setShowPopup} showPopup={showPopup} type={popupType} />
         </ThemeProvider>
     );
 };

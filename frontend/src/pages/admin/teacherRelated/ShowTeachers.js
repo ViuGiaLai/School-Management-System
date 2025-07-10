@@ -24,9 +24,23 @@ const ShowTeachers = () => {
     const { teachersList, loading, error, response } = useSelector((state) => state.teacher);
     const { currentUser } = useSelector((state) => state.user);
 
-    useEffect(() => {
-        dispatch(getAllTeachers(currentUser._id));
-    }, [currentUser._id, dispatch]);
+   useEffect(() => {                    
+        // Nếu currentUser.school là object có _id, dùng _id. Nếu không, dùng currentUser._id (admin là chủ trường)
+        let schoolId = undefined;
+        if (currentUser?.school?._id) {
+            schoolId = currentUser.school._id;
+        } else if (currentUser?.school && typeof currentUser.school === 'string') {
+            schoolId = currentUser.school;
+        } else if (currentUser?._id) {
+            schoolId = currentUser._id;
+        }
+        if (schoolId) {
+            dispatch(getAllTeachers(schoolId));
+        } else {
+            setMessage('No school ID found for current user!');
+            setShowPopup(true);
+        }
+    }, [currentUser, dispatch]);
 
     const [showPopup, setShowPopup] = useState(false);
     const [message, setMessage] = useState("");
@@ -64,7 +78,7 @@ const ShowTeachers = () => {
 
     if (error) {
         console.log(error);
-        return <div>Error loading data. Please try again.</div>;
+        return <div>Error loading data: {error}</div>;
     }
 
     if (teachersList.length === 0) {

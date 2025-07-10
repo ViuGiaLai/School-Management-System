@@ -9,8 +9,8 @@ const StudentProfile = () => {
   if (response) { console.log(response) }
   else if (error) { console.log(error) }
 
-  const sclassName = currentUser.sclassName
-  const studentSchool = currentUser.school
+  const sclassName = currentUser.sclassName;
+  const studentSchool = currentUser.school;
 
   return (
     <>
@@ -41,14 +41,14 @@ const StudentProfile = () => {
             <Grid item xs={12}>
               <Box display="flex" justifyContent="center">
                 <Typography variant="subtitle1" component="p" textAlign="center">
-                  Class: {sclassName.sclassName}
+                  Class: {sclassName?.sclassName || ""}
                 </Typography>
               </Box>
             </Grid>
             <Grid item xs={12}>
               <Box display="flex" justifyContent="center">
                 <Typography variant="subtitle1" component="p" textAlign="center">
-                  School: {studentSchool.schoolName}
+                  School: {studentSchool?.schoolName || ""}
                 </Typography>
               </Box>
             </Grid>
@@ -62,32 +62,32 @@ const StudentProfile = () => {
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <Typography variant="subtitle1" component="p">
-                  <strong>Date of Birth:</strong> January 1, 2000
+                  <strong>Date of Birth:</strong> {currentUser.dob ? new Date(currentUser.dob).toLocaleDateString() : "N/A"}
                 </Typography>
               </Grid>
               <Grid item xs={12} sm={6}>
                 <Typography variant="subtitle1" component="p">
-                  <strong>Gender:</strong> Male
+                  <strong>Gender:</strong> {currentUser.gender || "N/A"}
                 </Typography>
               </Grid>
               <Grid item xs={12} sm={6}>
                 <Typography variant="subtitle1" component="p">
-                  <strong>Email:</strong> john.doe@example.com
+                  <strong>Email:</strong> {currentUser.email || "N/A"}
                 </Typography>
               </Grid>
               <Grid item xs={12} sm={6}>
                 <Typography variant="subtitle1" component="p">
-                  <strong>Phone:</strong> (123) 456-7890
+                  <strong>Phone:</strong> {currentUser.phoneNumber || "N/A"}
                 </Typography>
               </Grid>
               <Grid item xs={12} sm={6}>
                 <Typography variant="subtitle1" component="p">
-                  <strong>Address:</strong> 123 Main Street, City, Country
+                  <strong>Address:</strong> {currentUser.address || "N/A"}
                 </Typography>
               </Grid>
               <Grid item xs={12} sm={6}>
                 <Typography variant="subtitle1" component="p">
-                  <strong>Emergency Contact:</strong> (987) 654-3210
+                  <strong>Emergency Contact:</strong> {currentUser.emergencyContact || "N/A"}
                 </Typography>
               </Grid>
             </Grid>

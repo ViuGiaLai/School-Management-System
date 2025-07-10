@@ -5,7 +5,7 @@ import { underStudentControl } from '../redux/studentRelated/studentSlice';
 import MuiAlert from '@mui/material/Alert';
 import { Snackbar } from '@mui/material';
 
-const Popup = ({ message, setShowPopup, showPopup }) => {
+const Popup = ({ message, setShowPopup, showPopup, type = 'info' }) => {
     const dispatch = useDispatch();
 
     const vertical = "top"
@@ -23,16 +23,9 @@ const Popup = ({ message, setShowPopup, showPopup }) => {
     return (
         <>
             <Snackbar open={showPopup} autoHideDuration={2000} onClose={handleClose} anchorOrigin={{ vertical, horizontal }} key={vertical + horizontal}>
-                {
-                    (message === "Done Successfully") ?
-                        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-                            {message}
-                        </Alert>
-                        :
-                        <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
-                            {message}
-                        </Alert>
-                }
+                <Alert onClose={handleClose} severity={type} sx={{ width: '100%' }}>
+                    {message}
+                </Alert>
             </Snackbar>
         </>
     );

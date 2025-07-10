@@ -40,18 +40,34 @@ const LoginPage = ({ role }) => {
 
         if (role === "Student") {
             const rollNum = event.target.rollNumber.value;
-            const studentName = event.target.studentName.value;
+            const identifier = event.target.identifier.value; // email or phone
             const password = event.target.password.value;
 
-            if (!rollNum || !studentName || !password) {
-                if (!rollNum) setRollNumberError(true);
-                if (!studentName) setStudentNameError(true);
-                if (!password) setPasswordError(true);
+            // Cho phép nhập 1 trong 2: rollNum hoặc identifier (email/phone)
+            if (!rollNum && !identifier) {
+                setRollNumberError(true);
+                setEmailError(true);
                 return;
             }
-            const fields = { rollNum, studentName, password }
-            setLoader(true)
-            dispatch(loginUser(fields, role))
+            if (!password) {
+                setPasswordError(true);
+                return;
+            }
+
+            // Xác định là email hay phone
+            let email = "";
+            let phoneNumber = "";
+            if (identifier) {
+                if (identifier.includes("@")) {
+                    email = identifier;
+                } else {
+                    phoneNumber = identifier;
+                }
+            }
+
+            const fields = { rollNum, password, email, phoneNumber };
+            setLoader(true);
+            dispatch(loginUser(fields, role));
         }
 
         else {
@@ -175,7 +191,6 @@ const LoginPage = ({ role }) => {
                                 <>
                                     <TextField
                                         margin="normal"
-                                        required
                                         fullWidth
                                         id="rollNumber"
                                         label={t('login.rollNumber')}
@@ -189,15 +204,13 @@ const LoginPage = ({ role }) => {
                                     />
                                     <TextField
                                         margin="normal"
-                                        required
                                         fullWidth
-                                        id="studentName"
-                                        label={t('login.studentName')}
-                                        name="studentName"
-                                        autoComplete="name"
-                                        autoFocus
-                                        error={studentNameError}
-                                        helperText={studentNameError && t('login.nameRequired')}
+                                        id="identifier"
+                                        label="Email or Phone Number"
+                                        name="identifier"
+                                        autoComplete="email"
+                                        error={emailError}
+                                        helperText={emailError && "Please enter your email or phone number"}
                                         onChange={handleInputChange}
                                     />
                                 </>
@@ -304,8 +317,10 @@ const LoginPage = ({ role }) => {
 
 export default LoginPage
 
+
 const StyledLink = styled(Link)`
   margin-top: 9px;
   text-decoration: none;
   color: #7f56da;
 `;
+

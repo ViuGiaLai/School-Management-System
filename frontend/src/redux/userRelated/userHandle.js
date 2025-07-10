@@ -46,7 +46,7 @@ export const registerUser = (fields, role) => async (dispatch) => {
         if (role === 'Student') module = 'students';
         else if (role === 'Teacher') module = 'teachers';
 
-        const endpoint = role === 'Student' ? 'StudentCreate' : `${role}Reg`;
+        const endpoint = role === 'Student' ? 'StudentCreate' : (role === 'Teacher' ? 'TeacherReg' : 'AdminCreate');
 
         const result = await axios.post(
             `${process.env.REACT_APP_BASE_URL}/api/${module}/${endpoint}`,
@@ -56,7 +56,7 @@ export const registerUser = (fields, role) => async (dispatch) => {
         console.log("Register API result:", result.data); // Thêm log để kiểm tra dữ liệu trả về
 
         // Kiểm tra trường hợp thành công dựa trên dữ liệu thực tế trả về
-        if (result.data.school) {
+        if (result.data.schoolName || result.data.school) {
             dispatch(stuffAdded(result.data));
         } else {
             dispatch(authFailed(result.data.message || "Registration failed"));

@@ -5,6 +5,10 @@ const Subject = require('../models/subjectSchema.js');
 const teacherRegister = async (req, res) => {
     const { name, email, password, role, school, teachSubject, teachSclass } = req.body;
     try {
+        // Make sure 'school' is a valid ObjectId string
+        if (!school) {
+            return res.status(400).json({ message: 'School ID is required' });
+        }
         const salt = await bcrypt.genSalt(10);
         const hashedPass = await bcrypt.hash(password, salt);
 

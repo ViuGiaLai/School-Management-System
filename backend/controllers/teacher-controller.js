@@ -4,25 +4,34 @@ const Subject = require('../models/subjectSchema.js');
 
 const teacherRegister = async (req, res) => {
     let { name, email, password, role, school, teachSubject, teachSclass } = req.body;
+
     try {
-        // Đảm bảo school là ObjectId
         if (school && typeof school === 'object' && school._id) {
             school = school._id;
         }
+
         if (!school) {
             return res.status(400).json({ message: 'School ID is required' });
         }
+
         const salt = await bcrypt.genSalt(10);
         const hashedPass = await bcrypt.hash(password, salt);
 
-        const teacher = new Teacher({ name, email, password: hashedPass, role, school, teachSubject, teachSclass });
+        const teacher = new Teacher({
+            name,
+            email,
+            password: hashedPass,
+            role,
+            school: school,
+            teachSubject,
+            teachSclass
+        });
 
         const existingTeacherByEmail = await Teacher.findOne({ email });
 
         if (existingTeacherByEmail) {
             res.send({ message: 'Email already exists' });
-        }
-        else {
+        } else {
             let result = await teacher.save();
             await Subject.findByIdAndUpdate(teachSubject, { teacher: teacher._id });
             result.password = undefined;
@@ -32,6 +41,7 @@ const teacherRegister = async (req, res) => {
         res.status(500).json(err);
     }
 };
+
 
 const teacherLogIn = async (req, res) => {
     try {

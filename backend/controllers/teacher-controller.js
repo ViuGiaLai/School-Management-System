@@ -225,6 +225,24 @@ const teacherAttendance = async (req, res) => {
     }
 };
 
+// Endpoint tạm thời để fix dữ liệu teacher có school là object
+const fixTeacherSchoolField = async (req, res) => {
+    try {
+        const teachers = await Teacher.find({ "school._id": { $exists: true } });
+        let count = 0;
+        for (const doc of teachers) {
+            await Teacher.updateOne(
+                { _id: doc._id },
+                { $set: { school: doc.school._id } }
+            );
+            count++;
+        }
+        res.json({ message: `Đã sửa ${count} bản ghi teacher có school là object.` });
+    } catch (err) {
+        res.status(500).json({ message: 'Lỗi khi fix dữ liệu teacher', error: err.message });
+    }
+};
+
 module.exports = {
     teacherRegister,
     teacherLogIn,
@@ -234,5 +252,6 @@ module.exports = {
     deleteTeacher,
     deleteTeachers,
     deleteTeachersByClass,
-    teacherAttendance
+    teacherAttendance,
+    fixTeacherSchoolField
 };

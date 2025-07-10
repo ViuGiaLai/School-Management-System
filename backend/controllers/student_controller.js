@@ -125,7 +125,20 @@ const getStudentDetail = async (req, res) => {
             .populate("attendance.subName", "subName sessions");
         if (student) {
             student.password = undefined;
-            res.send(student);
+            // Chỉ trả về thông tin cá nhân cần thiết
+            const personalInfo = {
+                name: student.name,
+                dob: student.dob,
+                gender: student.gender,
+                email: student.email,
+                phoneNumber: student.phoneNumber,
+                address: student.address,
+                emergencyContact: student.emergencyContact, // nếu có trường này trong schema
+                school: student.school,
+                sclassName: student.sclassName,
+                // ...bạn có thể thêm các trường khác nếu cần
+            };
+            res.send({ ...personalInfo, _id: student._id });
         }
         else {
             res.send({ message: "No student found" });

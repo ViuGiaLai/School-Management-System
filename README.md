@@ -29,10 +29,10 @@ Một hệ thống quản lý trường học đơn giản gồm 3 vai trò ngư
 
 - **Frontend**: ReactJS, Redux, Axios, React Router
 - **Backend**: Node.js, Express.js
-- **Database**: MongoDB
+- **Database**: MongoDB Atlas
 - **Deploy**:
   - Frontend: Vercel
-  - Backend: (local hoặc Render/Railway)
+  - Backend: Render
 
 ---
 

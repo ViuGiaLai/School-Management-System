@@ -1,191 +1,208 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
 import { getAllTeachers } from '../../../redux/teacherRelated/teacherHandle';
-import {
-    Paper, Table, TableBody, TableContainer,
-    TableHead, TablePagination, Button, Box, IconButton, Typography,
-} from '@mui/material';
 import { deleteUser } from '../../../redux/userRelated/userHandle';
-import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
-import { StyledTableCell, StyledTableRow } from '../../../components/styles';
-import { BlueButton, GreenButton } from '../../../components/buttonStyles';
-import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
-import SpeedDialTemplate from '../../../components/SpeedDialTemplate';
-import Popup from '../../../components/Popup';
+import {
+  Table,
+  Button,
+  Typography,
+  Space,
+  Popconfirm,
+  message,
+  Pagination,
+  FloatButton,
+  Modal,
+  Card,
+  Empty
+} from 'antd';
+import {
+  UserAddOutlined,
+  DeleteOutlined,
+  EyeOutlined,
+  ExclamationCircleOutlined
+} from '@ant-design/icons';
 import Loader from '../../../components/Loader';
 
+const { Column } = Table;
+const { confirm } = Modal;
+
 const ShowTeachers = () => {
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
 
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
-    const { teachersList, loading, error, response } = useSelector((state) => state.teacher);
-    const { currentUser } = useSelector((state) => state.user);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { teachersList, loading, error, response } = useSelector((state) => state.teacher);
+  const { currentUser } = useSelector((state) => state.user);
 
-   useEffect(() => {                    
-        // Nếu currentUser.school là object có _id, dùng _id. Nếu không, dùng currentUser._id (admin là chủ trường)
-        let schoolId = undefined;
-        if (currentUser?.school?._id) {
-            schoolId = currentUser.school._id;
-        } else if (currentUser?.school && typeof currentUser.school === 'string') {
-            schoolId = currentUser.school;
-        } else if (currentUser?._id) {
-            schoolId = currentUser._id;
-        }
-        if (schoolId) {
-            dispatch(getAllTeachers(schoolId));
-        } else {
-            setMessage('No school ID found for current user!');
-            setShowPopup(true);
-        }
-    }, [currentUser, dispatch]);
+  useEffect(() => {                    
+    let schoolId = undefined;
+    if (currentUser?.school?._id) {
+      schoolId = currentUser.school._id;
+    } else if (currentUser?.school && typeof currentUser.school === 'string') {
+      schoolId = currentUser.school;
+    } else if (currentUser?._id) {
+      schoolId = currentUser._id;
+    }
+    
+    if (schoolId) {
+      dispatch(getAllTeachers(schoolId));
+    } else {
+      setModalMessage('No school ID found for current user!');
+      setIsModalVisible(true);
+    }
+  }, [currentUser, dispatch]);
 
-    const [showPopup, setShowPopup] = useState(false);
-    const [message, setMessage] = useState("");
-
-    const deleteHandler = (deleteID, address) => {
-        console.log(deleteID);
-        console.log(address);
-        setMessage("Sorry the delete function has been disabled for now.")
-        setShowPopup(true)
-
-        // dispatch(deleteUser(deleteID, address)).then(() => {
-        //     dispatch(getAllTeachers(currentUser._id));
-        // });
-    };
-
-    const columns = [
-        { id: 'name', label: 'Name', minWidth: 170 },
-        { id: 'teachSubject', label: 'Subject', minWidth: 100 },
-        { id: 'teachSclass', label: 'Class', minWidth: 170 },
-    ];
-
-    const rows = teachersList.map((teacher) => {
-        return {
-            name: teacher.name,
-            teachSubject: teacher.teachSubject?.subName || null,
-            teachSclass: teacher.teachSclass?.sclassName || 'N/A',
-            teachSclassID: teacher.teachSclass?._id,
-            id: teacher._id,
-        };
+  const deleteHandler = (deleteID, address) => {
+    confirm({
+      title: 'Delete Confirmation',
+      icon: <ExclamationCircleOutlined />,
+      content: 'Sorry, the delete function has been disabled for now.',
+      okText: 'OK',
+      cancelText: 'Cancel',
+      onOk() {
+        message.info('Delete function is currently disabled');
+      }
     });
+    
+    // Uncomment to enable actual deletion
+    // dispatch(deleteUser(deleteID, address)).then(() => {
+    //     dispatch(getAllTeachers(currentUser._id));
+    // });
+  };
 
-    if (loading) {
-        return <Loader />;
-    }
+  const columns = [
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: 'Subject',
+      dataIndex: 'teachSubject',
+      key: 'teachSubject',
+      render: (value, record) => (
+        value ? value : (
+          <Button
+            type="primary"
+            disabled={!record.teachSclassID}
+            onClick={() => navigate(`/Admin/teachers/choosesubject/${record.teachSclassID}/${record.id}`)}
+          >
+            Add Subject
+          </Button>
+        )
+      ),
+    },
+    {
+      title: 'Class',
+      dataIndex: 'teachSclass',
+      key: 'teachSclass',
+      render: (value) => value || 'N/A'
+    },
+    {
+      title: 'Actions',
+      key: 'actions',
+      render: (_, record) => (
+        <Space size="middle">
+          <Popconfirm
+            title="Are you sure to delete this teacher?"
+            onConfirm={() => deleteHandler(record.id, "Teacher")}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button danger icon={<DeleteOutlined />} />
+          </Popconfirm>
+          <Button 
+            type="primary" 
+            icon={<EyeOutlined />}
+            onClick={() => navigate("/Admin/teachers/teacher/" + record.id)}
+          >
+            View
+          </Button>
+        </Space>
+      ),
+    },
+  ];
 
-    if (error) {
-        console.log(error);
-        return <div>Error loading data: {error}</div>;
-    }
+  const data = teachersList.map((teacher) => ({
+    key: teacher._id,
+    name: teacher.name,
+    teachSubject: teacher.teachSubject?.subName || null,
+    teachSclass: teacher.teachSclass?.sclassName,
+    teachSclassID: teacher.teachSclass?._id,
+    id: teacher._id,
+  }));
 
-    if (teachersList.length === 0) {
-        return (
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', flexDirection: 'column' }}>
-                <Typography variant="h6">No teachers found</Typography>
-                <GreenButton variant="contained" onClick={() => navigate("/Admin/teachers/chooseclass")} sx={{ mt: 2 }}>
-                    Add Teacher
-                </GreenButton>
-            </Box>
-        );
-    }
+  if (loading) {
+    return <Loader />;
+  }
 
-    const actions = [
-        {
-            icon: <PersonAddAlt1Icon color="primary" />, name: 'Add New Teacher',
-            action: () => navigate("/Admin/teachers/chooseclass")
-        },
-        {
-            icon: <PersonRemoveIcon color="error" />, name: 'Delete All Teachers',
-            action: () => deleteHandler(currentUser._id, "Teachers")
-        },
-    ];
+  if (error) {
+    console.log(error);
+    return <div>Error loading data: {error}</div>;
+  }
 
+  if (teachersList.length === 0) {
     return (
-        <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-            <TableContainer>
-                <Table stickyHeader aria-label="sticky table">
-                    <TableHead>
-                        <StyledTableRow>
-                            {columns.map((column) => (
-                                <StyledTableCell
-                                    key={column.id}
-                                    align={column.align}
-                                    style={{ minWidth: column.minWidth }}
-                                >
-                                    {column.label}
-                                </StyledTableCell>
-                            ))}
-                            <StyledTableCell align="center">
-                                Actions
-                            </StyledTableCell>
-                        </StyledTableRow>
-                    </TableHead>
-                    <TableBody>
-                        {rows
-                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            .map((row) => {
-                                return (
-                                    <StyledTableRow hover role="checkbox" tabIndex={-1} key={row.id}>
-                                        {columns.map((column) => {
-                                            const value = row[column.id];
-                                            if (column.id === 'teachSubject') {
-                                                return (
-                                                    <StyledTableCell key={column.id} align={column.align}>
-                                                        {value ? (
-                                                            value
-                                                        ) : (
-                                                            <Button variant="contained"
-                                                                disabled={!row.teachSclassID}
-                                                                onClick={() => {
-                                                                    navigate(`/Admin/teachers/choosesubject/${row.teachSclassID}/${row.id}`)
-                                                                }}>
-                                                                Add Subject
-                                                            </Button>
-                                                        )}
-                                                    </StyledTableCell>
-                                                );
-                                            }
-                                            return (
-                                                <StyledTableCell key={column.id} align={column.align}>
-                                                    {column.format && typeof value === 'number' ? column.format(value) : value}
-                                                </StyledTableCell>
-                                            );
-                                        })}
-                                        <StyledTableCell align="center">
-                                            <IconButton onClick={() => deleteHandler(row.id, "Teacher")}>
-                                                <PersonRemoveIcon color="error" />
-                                            </IconButton>
-                                            <BlueButton variant="contained"
-                                                onClick={() => navigate("/Admin/teachers/teacher/" + row.id)}>
-                                                View
-                                            </BlueButton>
-                                        </StyledTableCell>
-                                    </StyledTableRow>
-                                );
-                            })}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-            <TablePagination
-                rowsPerPageOptions={[5, 10, 25, 100]}
-                component="div"
-                count={rows.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={(event, newPage) => setPage(newPage)}
-                onRowsPerPageChange={(event) => {
-                    setRowsPerPage(parseInt(event.target.value, 5));
-                    setPage(0);
-                }}
-            />
-
-            <SpeedDialTemplate actions={actions} />
-            <Popup message={message} setShowPopup={setShowPopup} showPopup={showPopup} />
-        </Paper >
+      <Card style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
+        <Empty description="No teachers found">
+          <Button 
+            type="primary"
+            icon={<UserAddOutlined />}
+            onClick={() => navigate("/Admin/teachers/chooseclass")}
+          >
+            Add Teacher
+          </Button>
+        </Empty>
+      </Card>
     );
+  }
+
+  return (
+    <div style={{ padding: '24px' }}>
+      <Table
+        columns={columns}
+        dataSource={data}
+        pagination={{
+          current: page,
+          pageSize: pageSize,
+          total: data.length,
+          showSizeChanger: true,
+          pageSizeOptions: ['5', '10', '25', '100'],
+          onChange: (page, pageSize) => {
+            setPage(page);
+            setPageSize(pageSize);
+          },
+        }}
+        scroll={{ x: true }}
+      />
+
+      <FloatButton.Group shape="circle" style={{ right: 24 }}>
+        <FloatButton
+          icon={<UserAddOutlined />}
+          tooltip="Add New Teacher"
+          onClick={() => navigate("/Admin/teachers/chooseclass")}
+        />
+        <FloatButton
+          icon={<DeleteOutlined />}
+          tooltip="Delete All Teachers"
+          onClick={() => deleteHandler(currentUser._id, "Teachers")}
+        />
+      </FloatButton.Group>
+
+      <Modal
+        title="Notification"
+        visible={isModalVisible}
+        onOk={() => setIsModalVisible(false)}
+        onCancel={() => setIsModalVisible(false)}
+      >
+        <p>{modalMessage}</p>
+      </Modal>
+    </div>
+  );
 };
 
-export default ShowTeachers
+export default ShowTeachers;

@@ -21,7 +21,7 @@ import { useTranslation } from 'react-i18next';
 const ChooseUser = ({ visitor }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const password = 'zxc';
+  const password = '123456';
 
   const { status, currentUser, currentRole } = useSelector((state) => state.user);
 
@@ -34,7 +34,7 @@ const ChooseUser = ({ visitor }) => {
   const navigateHandler = (user) => {
     if (user === 'Admin') {
       if (visitor === 'guest') {
-        const email = 'yogendra@12';
+        const email = 'admin@gmail.com';
         const fields = { email, password };
         setLoader(true);
         dispatch(loginUser(fields, user));
@@ -43,9 +43,9 @@ const ChooseUser = ({ visitor }) => {
       }
     } else if (user === 'Student') {
       if (visitor === 'guest') {
-        const rollNum = '1';
-        const studentName = 'Dipesh Awasthi';
-        const fields = { rollNum, studentName, password };
+        const rollNum = '2005';
+        const email = 'student@gmail.com';
+        const fields = { rollNum, email, password };
         setLoader(true);
         dispatch(loginUser(fields, user));
       } else {
@@ -53,7 +53,7 @@ const ChooseUser = ({ visitor }) => {
       }
     } else if (user === 'Teacher') {
       if (visitor === 'guest') {
-        const email = 'tony@12';
+        const email = 'teacher@gmail.com';
         const fields = { email, password };
         setLoader(true);
         dispatch(loginUser(fields, user));

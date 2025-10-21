@@ -1,10 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { registerUser } from '../../../redux/userRelated/userHandle';
-import { underControl } from '../../../redux/userRelated/userSlice';
+import { registerStudent } from '../../../redux/studentRelated/studentHandle';
+import { 
+    selectRegisterStatus, 
+    selectRegisterError, 
+    resetRegisterStatus,
+    selectAllStudents
+} from '../../../redux/studentRelated/studentSlice';
 import { getAllSclasses } from '../../../redux/sclassRelated/sclassHandle';
-import { Row, Col, Form, Input, Button, Select, DatePicker, Typography, message, Spin } from 'antd';
+import { Row, Col, Form, Input, Button, Select, DatePicker, Typography, message } from 'antd';
 import Popup from '../../../components/Popup';
 
 const { Title } = Typography;
@@ -14,18 +19,25 @@ const AddStudent = ({ situation }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const params = useParams();
-
-  const userState = useSelector(state => state.user);
-  const { status, currentUser, response, error } = userState;
+  
+  const currentUser = useSelector(state => state.user.currentUser);
   const { sclassesList } = useSelector(state => state.sclass);
-
+  const registerStatus = useSelector(selectRegisterStatus);
+  const registerError = useSelector(selectRegisterError);
+  const students = useSelector(selectAllStudents);
+  
   const [form] = Form.useForm();
-  const [loader, setLoader] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [popupMessage, setPopupMessage] = useState('');
 
-  const adminID = currentUser._id;
+  const adminID = currentUser?._id;
   const role = 'Student';
+
+  // Check if roll number already exists
+  const isRollNumberExists = useCallback((rollNum) => {
+    return students.some(student => student.rollNum === rollNum);
+  }, [students]);
 
   useEffect(() => {
     dispatch(getAllSclasses(adminID, 'Sclass'));
@@ -38,37 +50,116 @@ const AddStudent = ({ situation }) => {
   }, [params.id, situation, form]);
 
   useEffect(() => {
-    if (status === 'added') {
-      dispatch(underControl());
-      message.success('Student added successfully');
-      navigate(-1);
-    } else if (status === 'failed') {
-      setPopupMessage(response);
-      setShowPopup(true);
-      setLoader(false);
-    } else if (status === 'error') {
-      setPopupMessage('Network Error');
-      setShowPopup(true);
-      setLoader(false);
+    // Fetch all students to check for duplicate roll numbers
+    if (adminID) {
+      dispatch(getAllSclasses(adminID, 'Sclass'));
     }
-  }, [status, navigate, response, error, dispatch]);
+  }, [adminID, dispatch]);
 
-  const onFinish = (values) => {
+  useEffect(() => {
+    if (registerStatus === 'succeeded') {
+      message.success('Student added successfully');
+      dispatch(resetRegisterStatus());
+      navigate(-1);
+    } else if (registerStatus === 'failed') {
+      setPopupMessage(registerError || 'Failed to add student');
+      setShowPopup(true);
+      setLoading(false);
+    }
+  }, [registerStatus, registerError, navigate, dispatch]);
+
+  const onFinish = async (values) => {
+    console.log('Form values:', values);
+    
     if (!values.sclassName) {
       setPopupMessage('Please select a class');
       setShowPopup(true);
       return;
     }
-    setLoader(true);
-    const fields = {
-      ...values,
-      sclassName: values.sclassName,
-      adminID,
-      school: adminID, // Thêm trường school
-      role,
-      attendance: [],
-    };
-    dispatch(registerUser(fields, role));
+    
+    if (!adminID) {
+      setPopupMessage('User not authenticated');
+      setShowPopup(true);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      
+      // Get the selected class to verify it exists
+      const selectedClass = sclassesList?.find(cls => cls._id === values.sclassName);
+      if (!selectedClass) {
+        throw new Error('Selected class not found');
+      }
+      
+      // Format the data as expected by the backend
+      const studentData = {
+        name: values.name.trim(),
+        rollNum: Number(values.rollNum),
+        email: values.email.trim().toLowerCase(),
+        password: values.password,
+        sclassName: values.sclassName, // This is the ObjectId of the class
+        adminID,
+        school: adminID,
+        role,
+        gender: values.gender || undefined,
+        dob: values.dob ? new Date(values.dob).toISOString() : undefined,
+        address: values.address || undefined,
+        phoneNumber: values.phoneNumber || undefined,
+        academicYear: values.academicYear || undefined
+      };
+      
+      console.log('Sending student data:', JSON.stringify(studentData, null, 2));
+      
+      const result = await dispatch(registerStudent(studentData));
+      
+      if (registerStudent.fulfilled.match(result)) {
+        message.success('Student registered successfully');
+        // Reset form and navigate
+        form.resetFields();
+        setTimeout(() => {
+          navigate(-1);
+        }, 1500);
+      } else {
+        // Handle specific error cases
+        const error = result.payload;
+        if (error && error.errors) {
+          // Handle validation errors
+          const errorMessages = Array.isArray(error.errors) 
+            ? error.errors.join('\n')
+            : Object.values(error.errors || {}).map(err => err?.message || String(err)).join('\n');
+          throw new Error(`Validation error: ${errorMessages}`);
+        } else if (error && error.field && error.value) {
+          // Handle duplicate key errors
+          throw new Error(`A student with this ${error.field} (${error.value}) already exists.`);
+        } else {
+          // Generic error
+          throw new Error(error?.message || 'Failed to register student');
+        }
+      }
+    } catch (error) {
+      console.error('Error registering student:', {
+        message: error.message,
+        stack: error.stack,
+        ...(error.response && { response: error.response })
+      });
+      
+      // Format error message for display
+      let errorMessage = 'Failed to register student. Please try again.';
+      
+      if (error.message) {
+        errorMessage = error.message;
+      } else if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.response?.data?.error) {
+        errorMessage = error.response.data.error;
+      }
+      
+      setPopupMessage(errorMessage);
+      setShowPopup(true);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -141,8 +232,14 @@ const AddStudent = ({ situation }) => {
 
           {/* Hàng cuối */}
           <Form.Item style={{ textAlign: 'center' }}>
-            <Button type="primary" htmlType="submit" size="large" disabled={loader}>
-              {loader ? <Spin /> : 'Add Student'}
+            <Button 
+              type="primary" 
+              htmlType="submit" 
+              size="large" 
+              loading={loading}
+              disabled={loading}
+            >
+              {loading ? 'Adding...' : 'Add Student'}
             </Button>
           </Form.Item>
         </Form>
